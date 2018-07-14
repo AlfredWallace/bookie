@@ -1,0 +1,73 @@
+@import "~bootstrap/scss/bootstrap";
+
+body, html {
+  height: 100%;
+}
+
+.bk-header {
+  margin-bottom: 4%;
+  font-size: 1.4em;
+
+  & > .container {
+    min-height: 50px;
+  }
+}
+
+.bk-header-shift {
+  margin-top: 5em;
+}
+
+.bk-match-card-content {
+  .bk-team-name {
+    font-size: 1.5em
+  }
+
+  .bk-score {
+    font-size: 1.4em
+  }
+
+  .bk-bets {
+    margin-top: 7%;
+  }
+}
+
+.bk-match-card-header {
+  font-size: 1.2em;
+}
+
+.bk-notif {
+  padding: 10px;
+  margin: 0 5px 5px;
+
+  font-size: 20px;
+
+  color: $white;
+  background: $info;
+
+  &.warn {
+    color: $dark;
+    background: $warning;
+  }
+
+  &.error {
+    background: $danger;
+  }
+
+  &.success {
+    background: $success;
+  }
+}
+
+.bk-ranks {
+  th {
+    white-space: nowrap;
+
+    &:first-child {
+      width: 100%;
+    }
+  }
+}
+
+.bk-cursor {
+  cursor: pointer;
+}

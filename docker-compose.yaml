@@ -1,0 +1,27 @@
+version: "3.6"
+services:
+    backend:
+        build: docker/php
+        container_name: wallace_php
+        working_dir: /var/www
+
+    nginx:
+        image: nginx:stable
+        container_name: wallace_nginx
+        working_dir: /etc/nginx
+        depends_on:
+            - backend
+        ports:
+            - 80:80
+
+    mysql:
+        image: mysql:5.7
+        container_name: wallace_mysql
+        depends_on:
+            - backend
+        ports:
+            - 3306:3306
+
+    frontend:
+        image: node:9.11-stretch
+        container_name: wallace_node

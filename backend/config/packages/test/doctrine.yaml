@@ -1,0 +1,8 @@
+doctrine:
+    dbal:
+        url: null
+        host: '%env(TEST_DATABASE_HOST)%'
+        dbname: '%env(TEST_DATABASE_NAME)%'
+        user: '%env(TEST_DATABASE_USER)%'
+        password: '%env(TEST_DATABASE_PASS)%'
+        port: '%env(TEST_DATABASE_PORT)%'
