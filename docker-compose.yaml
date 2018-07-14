@@ -1,9 +1,13 @@
-version: "3.6"
+version: "2"
 services:
     backend:
         build: docker/php
         container_name: wallace_php
         working_dir: /var/www
+        env_file:
+            - docker/php/env_vars.env
+        volumes:
+            - ./backend:/var/www/bookie-api:delegated
 
     nginx:
         image: nginx:stable
@@ -13,6 +17,8 @@ services:
             - backend
         ports:
             - 80:80
+        volumes_from:
+            - backend
 
     mysql:
         image: mysql:5.7
@@ -21,6 +27,8 @@ services:
             - backend
         ports:
             - 3306:3306
+        env_file:
+            - docker/mysql/env_vars.env
 
     frontend:
         image: node:9.11-stretch

@@ -1,2 +1,4 @@
 .idea/
 .DS_Store
+docker/mysql/*.env
+docker/php/*.env
