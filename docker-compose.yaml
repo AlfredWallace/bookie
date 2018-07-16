@@ -9,8 +9,8 @@ services:
         volumes:
             - ./backend:/var/www/bookie-api:delegated
 
-    nginx:
-        image: nginx:stable
+    web_server:
+        build: docker/nginx
         container_name: wallace_nginx
         working_dir: /etc/nginx
         depends_on:
@@ -20,7 +20,7 @@ services:
         volumes_from:
             - backend
 
-    mysql:
+    database:
         image: mysql:5.7
         container_name: wallace_mysql
         depends_on:
