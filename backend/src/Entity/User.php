@@ -5,8 +5,8 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -21,6 +21,8 @@ class User implements UserInterface
      * @ORM\Column(type="integer")
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @var int
      */
     private $id;
 
@@ -31,6 +33,8 @@ class User implements UserInterface
      *     pattern="/^[A-Za-z][A-Za-z0-9_. -]{2,15}$/",
      *     groups={"create", "update"}
      * )
+     *
+     * @var string
      */
     private $username;
 
@@ -38,12 +42,16 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=64)
      * @Serializer\Groups({"user.sensitive"})
      * @Assert\NotBlank(groups={"create", "update"})
+     *
+     * @var string
      */
     private $password;
 
     /**
      * @ORM\Column(type="json")
      * @Serializer\Groups({"user.sensitive"})
+     *
+     * @var array
      */
     private $roles = [];
 
@@ -55,11 +63,15 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
+     *
+     * @var int
      */
     private $points = 0;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
+     *
+     * @var int
      */
     private $pointsAlternative = 0;
 
@@ -71,7 +83,7 @@ class User implements UserInterface
     /**
      * @return string The password
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -87,7 +99,7 @@ class User implements UserInterface
     /**
      * @return string The username
      */
-    public function getUsername(): string
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -128,7 +140,7 @@ class User implements UserInterface
     /**
      * @return mixed
      */
-    public function getRoles(): array
+    public function getRoles(): ?array
     {
         return $this->roles;
     }
@@ -168,9 +180,21 @@ class User implements UserInterface
     }
 
     /**
+     * @Serializer\VirtualProperty()
+     *
+     * @return array
+     */
+    public function getBetsIds(): ?array
+    {
+        return array_map(function (Bet $bet) {
+            return $bet->getId();
+        }, $this->bets->toArray());
+    }
+
+    /**
      * @return mixed
      */
-    public function getBets(): Collection
+    public function getBets(): ?Collection
     {
         return $this->bets;
     }
@@ -206,7 +230,7 @@ class User implements UserInterface
     /**
      * @return mixed
      */
-    public function getPoints(): int
+    public function getPoints(): ?int
     {
         return $this->points;
     }
@@ -224,7 +248,7 @@ class User implements UserInterface
     /**
      * @return mixed
      */
-    public function getPointsAlternative(): int
+    public function getPointsAlternative(): ?int
     {
         return $this->pointsAlternative;
     }

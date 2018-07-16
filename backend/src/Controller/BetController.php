@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Bet;
 use App\Exception\BetFormatException;
 use App\Exception\MatchStartedException;
+use App\Repository\BetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use FOS\RestBundle\Controller\FOSRestController;
@@ -14,6 +15,28 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 
 class BetController extends FOSRestController
 {
+    /**
+     * @var BetRepository
+     */
+    private $betRepository;
+
+    public function __construct(BetRepository $betRepository)
+    {
+        $this->betRepository = $betRepository;
+    }
+
+    /**
+     * @Rest\Route("/bets", name="bookie_bets")
+     * @Method({"GET"})
+     * @Rest\View(statusCode=200, serializerGroups={"Default"})
+     *
+     * @throws \Doctrine\ORM\Query\QueryException
+     */
+    public function listBets()
+    {
+        return $this->betRepository->findAllIndexedById();
+    }
+
     /**
      * @Rest\Route("/bets/group-stage", name="bookie_bets_group_stage_post")
      * @Method({"POST"})

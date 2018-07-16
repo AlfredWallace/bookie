@@ -16,45 +16,77 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Match
 {
+    const MONTHS = [
+        'janvier',
+        'février',
+        'mars',
+        'avril',
+        'mai',
+        'juin',
+        'juillet',
+        'août',
+        'septembre',
+        'octobre',
+        'novembre',
+        'décembre',
+    ];
+    const DAYS = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi',];
+
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @var int
      */
     protected $id;
 
     /**
      * @ORM\Column(type="boolean")
+     *
+     * @var bool
      */
     protected $isOver = false;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @Assert\DateTime()
+     *
+     * @var \DateTime
      */
     protected $kickOff;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Team")
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Groups({"match.teams"})
+     *
+     * @var Team
      */
     protected $homeTeam;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Team")
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Groups({"match.teams"})
+     *
+     * @var Team
      */
     protected $awayTeam;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
      * @Assert\GreaterThanOrEqual(value="0")
+     *
+     * @var int
      */
     protected $homeScore = 0;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
      * @Assert\GreaterThanOrEqual(value="0")
+     *
+     * @var int
      */
     protected $awayScore = 0;
 
@@ -72,7 +104,7 @@ class Match
     /**
      * @return bool
      */
-    public function isOver(): bool
+    public function isOver(): ?bool
     {
         return $this->isOver;
     }
@@ -90,9 +122,30 @@ class Match
     /**
      * @return mixed
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     *
+     * @return null|string
+     */
+    public function getPrettyKickOff(): ?string
+    {
+        $kickOff = $this->kickOff;
+
+        if ($kickOff !== null) {
+            $weekDay = self::DAYS[(int)$kickOff->format('w')];
+            $day = (int)$kickOff->format('j');
+            $dayText = $day === 1 ? $day . 'er' : $day;
+            $month = self::MONTHS[(int)$kickOff->format('n') - 1];
+            $year = $kickOff->format('Y');
+            return "$weekDay $dayText $month $year";
+        }
+
+        return null;
     }
 
     /**
@@ -114,6 +167,16 @@ class Match
     }
 
     /**
+     * @Serializer\VirtualProperty()
+     *
+     * @return int|null
+     */
+    public function getHomeTeamId(): ?int
+    {
+        return isset($this->homeTeam) ? $this->homeTeam->getId() : null;
+    }
+
+    /**
      * @return mixed
      */
     public function getHomeTeam(): ?Team
@@ -129,6 +192,16 @@ class Match
     {
         $this->homeTeam = $homeTeam;
         return $this;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     *
+     * @return int|null
+     */
+    public function getAwayTeamId(): ?int
+    {
+        return isset($this->awayTeam) ? $this->awayTeam->getId() : null;
     }
 
     /**
@@ -152,7 +225,7 @@ class Match
     /**
      * @return mixed
      */
-    public function getHomeScore(): int
+    public function getHomeScore(): ?int
     {
         return $this->homeScore;
     }
@@ -170,7 +243,7 @@ class Match
     /**
      * @return mixed
      */
-    public function getAwayScore(): int
+    public function getAwayScore(): ?int
     {
         return $this->awayScore;
     }
@@ -186,9 +259,21 @@ class Match
     }
 
     /**
+     * @Serializer\VirtualProperty()
+     *
+     * @return array
+     */
+    public function getBetsIds(): ?array
+    {
+        return array_map(function (Bet $bet) {
+            return $bet->getId();
+        }, $this->bets->toArray());
+    }
+
+    /**
      * @return mixed
      */
-    public function getBets(): Collection
+    public function getBets(): ?Collection
     {
         return $this->bets;
     }
@@ -213,11 +298,29 @@ class Match
     public function removeBet(Bet $bet): self
     {
         if ($this->bets->contains($bet)) {
-        $this->bets->removeElement($bet);
-        if ($bet->getMatch() === $this) {
-            $bet->setMatch(null);
+            $this->bets->removeElement($bet);
+            if ($bet->getMatch() === $this) {
+                $bet->setMatch(null);
+            }
         }
-    }
         return $this;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     *
+     * @return bool
+     */
+    public function isToday(): ?bool
+    {
+        $kickOff = $this->kickOff;
+        if ($kickOff === null) {
+            return false;
+        }
+
+        $today = new \DateTime();
+        return (int)$today->format('Y') === (int)$kickOff->format('Y')
+            && (int)$today->format('n') === (int)$kickOff->format('n')
+            && (int)$today->format('j') === (int)$kickOff->format('j');
     }
 }

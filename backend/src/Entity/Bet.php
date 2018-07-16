@@ -20,38 +20,54 @@ class Bet
      * @ORM\Column(type="integer")
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @var int
      */
     protected $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="bets")
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Groups({"bet.user"})
+     *
+     * @var User
      */
     protected $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Match", inversedBy="bets")
      * @ORM\JoinColumn(nullable=false)
+     * @Serializer\Groups({"bet.match"})
+     *
+     * @var Match
      */
     protected $match;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
+     *
+     * @var int
      */
     protected $homeScore;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
+     *
+     * @var int
      */
     protected $awayScore;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
+     *
+     * @var int
      */
     protected $points = 0;
 
     /**
      * @ORM\Column(type="smallint", nullable=true)
+     *
+     * @var int
      */
     protected $pointsAlternative = 0;
 
@@ -61,6 +77,16 @@ class Bet
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     *
+     * @return int|null
+     */
+    public function getUserId(): ?int
+    {
+        return isset($this->user) ? $this->user->getId() : null;
     }
 
     /**
@@ -79,6 +105,16 @@ class Bet
     {
         $this->user = $user;
         return $this;
+    }
+
+    /**
+     * @Serializer\VirtualProperty()
+     *
+     * @return int|null
+     */
+    public function getMatchId(): ?int
+    {
+        return isset($this->match) ? $this->match->getId() : null;
     }
 
     /**
@@ -138,7 +174,7 @@ class Bet
     /**
      * @return mixed
      */
-    public function getPoints(): int
+    public function getPoints(): ?int
     {
         return $this->points;
     }
@@ -156,7 +192,7 @@ class Bet
     /**
      * @return mixed
      */
-    public function getPointsAlternative(): int
+    public function getPointsAlternative(): ?int
     {
         return $this->pointsAlternative;
     }

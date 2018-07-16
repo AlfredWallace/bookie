@@ -17,6 +17,8 @@ class Team
      * @ORM\Column(type="integer")
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @var int
      */
     private $id;
 
@@ -27,6 +29,8 @@ class Team
      *     pattern="/^[A-Za-z. -]{3,255}$/",
      *     groups={"create", "update"}
      * )
+     *
+     * @var string
      */
     private $name;
 
@@ -37,6 +41,8 @@ class Team
      *     pattern="/^[A-Z]{2,6}$/",
      *     groups={"create", "update"}
      * )
+     *
+     * @var string
      */
     private $abbreviation;
 
@@ -57,7 +63,7 @@ class Team
     /**
      * @return mixed
      */
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -75,7 +81,7 @@ class Team
     /**
      * @return mixed
      */
-    public function getAbbreviation(): string
+    public function getAbbreviation(): ?string
     {
         return $this->abbreviation;
     }

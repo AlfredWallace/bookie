@@ -2,15 +2,15 @@
 
 namespace App\Repository;
 
-use App\Entity\Match;
+use App\Entity\Team;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class MatchRepository extends ServiceEntityRepository
+class TeamRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Match::class);
+        parent::__construct($registry, Team::class);
     }
 
     /**
@@ -19,8 +19,8 @@ class MatchRepository extends ServiceEntityRepository
      */
     public function findAllIndexedById()
     {
-        return $this->createQueryBuilder('m')
-            ->indexBy('m', 'm.id')
+        return $this->createQueryBuilder('t')
+            ->indexBy('t', 't.id')
             ->getQuery()->getResult();
     }
 }

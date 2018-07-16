@@ -6,18 +6,16 @@ use App\Entity\Bet;
 use App\Entity\User;
 use App\Exception\DuplicateRessourceException;
 use App\Factory\UserFactory;
+use App\Repository\UserRepository;
 use App\Serializer\ConstraintViolationUtilityTrait;
 use App\Service\AlternativePointsCalculator;
 use App\Service\BasicPointsCalculator;
 use Doctrine\ORM\EntityNotFoundException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
-use JMS\Serializer\SerializationContext;
-use JMS\Serializer\SerializerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -31,15 +29,15 @@ class UserController extends FOSRestController
     const USER_NOT_FOUND_MESSAGE = 'User not found.';
 
     /**
-     * @var SerializerInterface
+     * @var UserRepository
      */
-    private $serializer;
+    private $userRepository;
 
     use ConstraintViolationUtilityTrait;
 
-    public function __construct(SerializerInterface $serializer)
+    public function __construct(UserRepository $userRepository)
     {
-        $this->serializer = $serializer;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -64,11 +62,12 @@ class UserController extends FOSRestController
         User $user,
         UserFactory $factory,
         ConstraintViolationListInterface $validationErrors
-    ) {
+    )
+    {
         $this->checkViolations($validationErrors);
         $em = $this->getDoctrine()->getManager();
         $username = $user->getUsername();
-        $dbUser = $em->getRepository('App:User')->findOneBy(['username' => $username]);
+        $dbUser = $this->userRepository->findOneBy(['username' => $username]);
         if (!is_null($dbUser)) {
             throw new DuplicateRessourceException("The user with the login $username already exists");
         }
@@ -104,7 +103,8 @@ class UserController extends FOSRestController
         User $requestUser,
         UserPasswordEncoderInterface $encoder,
         ConstraintViolationListInterface $validationErrors
-    ) {
+    )
+    {
         if (is_null($dbUser)) {
             throw new EntityNotFoundException(self::USER_NOT_FOUND_MESSAGE);
         }
@@ -143,7 +143,8 @@ class UserController extends FOSRestController
         User $requestUser,
         UserPasswordEncoderInterface $encoder,
         ConstraintViolationListInterface $validationErrors
-    ) {
+    )
+    {
         if (is_null($dbUser)) {
             throw new EntityNotFoundException(self::USER_NOT_FOUND_MESSAGE);
         }
@@ -195,65 +196,64 @@ class UserController extends FOSRestController
      * @Rest\Route("/users", name="bookie_users_list")
      * @Method({"GET"})
      * @Rest\View(statusCode=200, serializerGroups={"Default"})
+     *
+     * @throws \Doctrine\ORM\Query\QueryException
      */
     public function listAction()
     {
-        return $this->getDoctrine()->getManager()->getRepository('App:User')->findBy([], [
-            'points' => 'DESC',
-            'username' => 'ASC',
-        ]);
+        return $this->userRepository->findAllIndexedById();
     }
-
-    /**
-     * @Rest\Route("/users-bets-stats", name="bookie_users_bets_stats_list")
-     * @Method({"GET"})
-     * @return JsonResponse
-     */
-    public function listWithBetsStats()
-    {
-        $users =  $this->getDoctrine()->getManager()->getRepository('App:User')->findBy([], [
-            'points' => 'DESC',
-            'username' => 'ASC',
-        ]);
-        $usersArray = [];
-
-        foreach ($users as $user) {
-            $userData = json_decode(
-                $this->serializer->serialize(
-                    $user,
-                    'json',
-                    SerializationContext::create()->setGroups(['Default'])
-                ),
-                true
-            );
-
-            $userData['nbBets'] = 0;
-            $userData['nbWins'] = 0;
-            $userData['nbPerfects'] = 0;
-
-            /** @var Bet $bet */
-            foreach ($user->getBets() as $bet) {
-                $match = $bet->getMatch();
-
-                if ($match->isOver()) {
-                    $userData['nbBets']++;
-
-                    if ($bet->getPoints() > 0) {
-                        $userData['nbWins']++;
-                    }
-
-                    if ($bet->getHomeScore() === $match->getHomeScore()
-                        && $bet->getAwayScore() === $match->getAwayScore()) {
-                        $userData['nbPerfects']++;
-                    }
-                }
-            }
-
-            $usersArray[] = $userData;
-        }
-
-        return new JsonResponse($usersArray);
-    }
+//
+//    /**
+//     * @Rest\Route("/users-bets-stats", name="bookie_users_bets_stats_list")
+//     * @Method({"GET"})
+//     * @return JsonResponse
+//     */
+//    public function listWithBetsStats()
+//    {
+//        $users =  $this->getDoctrine()->getManager()->getRepository('App:User')->findBy([], [
+//            'points' => 'DESC',
+//            'username' => 'ASC',
+//        ]);
+//        $usersArray = [];
+//
+//        foreach ($users as $user) {
+//            $userData = json_decode(
+//                $this->serializer->serialize(
+//                    $user,
+//                    'json',
+//                    SerializationContext::create()->setGroups(['Default'])
+//                ),
+//                true
+//            );
+//
+//            $userData['nbBets'] = 0;
+//            $userData['nbWins'] = 0;
+//            $userData['nbPerfects'] = 0;
+//
+//            /** @var Bet $bet */
+//            foreach ($user->getBets() as $bet) {
+//                $match = $bet->getMatch();
+//
+//                if ($match->isOver()) {
+//                    $userData['nbBets']++;
+//
+//                    if ($bet->getPoints() > 0) {
+//                        $userData['nbWins']++;
+//                    }
+//
+//                    if ($bet->getHomeScore() === $match->getHomeScore()
+//                        && $bet->getAwayScore() === $match->getAwayScore()) {
+//                        $userData['nbPerfects']++;
+//                    }
+//                }
+//            }
+//
+//            $usersArray[] = $userData;
+//        }
+//
+//        return new JsonResponse($usersArray);
+//    }
 
     /**
      * @Rest\Route("/users/{id}", name="bookie_users_remove", requirements={"id"="\d+"})
@@ -308,7 +308,8 @@ class UserController extends FOSRestController
     )
     {
         $em = $this->getDoctrine()->getManager();
-        foreach ($em->getRepository('App:User')->findAll() as $user) {
+        /** @var User $user */
+        foreach ($this->userRepository->findAll() as $user) {
             /** @var Bet $bet */
             foreach ($user->getBets() as $bet) {
                 $bet->setPoints($basicCalculator->getBetPoints($bet));

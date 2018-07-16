@@ -33,8 +33,8 @@ class UserProvider
         return [
             'main' => [
                 'user' => [
-                    'username' => 'Bookie Wallace',
-                    'password' => 'Bookie123!',
+                    'username' => 'wallace',
+                    'password' => 'wallace',
                 ],
             ],
         ];
@@ -57,8 +57,8 @@ class UserProvider
         return [
             [
                 'user' => [
-                    'username' => 'Test Bookie',
-                    'password' => 'my!Pass%1337@',
+                    'username' => 'plop',
+                    'password' => 'plop',
                 ],
             ],
             [
