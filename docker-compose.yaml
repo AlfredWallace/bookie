@@ -3,11 +3,13 @@ services:
     backend:
         build: docker/php
         container_name: wallace_php
-        working_dir: /var/www
+        working_dir: /var/www/bookie-api
         env_file:
             - docker/php/env_vars.env
         volumes:
             - ./backend:/var/www/bookie-api:delegated
+        expose:
+            - 9000
 
     web_server:
         build: docker/nginx
