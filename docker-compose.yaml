@@ -10,6 +10,7 @@ services:
             - ./backend:/var/www/bookie-api:delegated
         expose:
             - 9000
+        restart: always
 
     web_server:
         build: docker/nginx
@@ -21,6 +22,7 @@ services:
             - 80:80
         volumes_from:
             - backend
+        restart: always
 
     database:
         image: mysql:5.7
@@ -31,7 +33,11 @@ services:
             - 3306:3306
         env_file:
             - docker/mysql/vars.env
+        volumes:
+            - ./var/mysql:/var/lib/mysql:cached
+        restart: always
 
-    frontend:
-        image: node:9.11-stretch
-        container_name: wallace_node
+#    frontend:
+#        image: node:9.11-stretch
+#        container_name: wallace_node
+#        restart: always
