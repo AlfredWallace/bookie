@@ -1,43 +1,39 @@
 version: "2"
 services:
-    backend:
-        build: docker/php
-        container_name: wallace_php
-        working_dir: /var/www/bookie-api
+    source:
+        build: ./docker/source
+        container_name: bookie_php_vue
+        working_dir: /var/www/bookie-front
         env_file:
-            - docker/php/vars.env
+            - ./docker/source/vars.env
         volumes:
             - ./backend:/var/www/bookie-api:delegated
+            - ./frontend:/var/www/bookie-front:delegated
         expose:
             - 9000
         restart: always
 
-    web_server:
-        build: docker/nginx
-        container_name: wallace_nginx
+    web:
+        build: ./docker/web
+        container_name: bookie_nginx
         working_dir: /etc/nginx
         depends_on:
-            - backend
+            - source
         ports:
             - 80:80
         volumes_from:
-            - backend
+            - source
         restart: always
 
     database:
         image: mysql:5.7
-        container_name: wallace_mysql
+        container_name: bookie_mysql
         depends_on:
-            - backend
+            - source
         ports:
             - 3306:3306
         env_file:
-            - docker/mysql/vars.env
+            - ./docker/database/vars.env
         volumes:
             - ./var/mysql:/var/lib/mysql:cached
         restart: always
-
-#    frontend:
-#        image: node:9.11-stretch
-#        container_name: wallace_node
-#        restart: always
