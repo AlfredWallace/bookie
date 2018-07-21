@@ -13,7 +13,7 @@
         <env name="APP_ENV" value="test" />
         <env name="APP_DEBUG" value="1" />
         <env name="APP_SECRET" value="s$cretf0rt3st" />
-        <env name="SHELL_VERBOSITY" value="-1" />
+        <env name="SHELL_VERBOSITY" value="0" />
         <!-- define your env variables for the test env here -->
 
         <!-- ###+ lexik/jwt-authentication-bundle ### -->
@@ -33,11 +33,7 @@
         <!-- ###- API URL ### -->
 
         <!-- ###+ doctrine ### -->
-        <env name="TEST_DATABASE_HOST" value="127.0.0.1"/>
-        <env name="TEST_DATABASE_NAME" value="dbname"/>
-        <env name="TEST_DATABASE_USER" value="dbuser"/>
-        <env name="TEST_DATABASE_PASS" value="dbpass"/>
-        <env name="TEST_DATABASE_PORT" value="3306"/>
+        <env name="TEST_DATABASE_URL" value="mysql://user:pass@host:port/database"/>
         <!-- ###- doctrine ### -->
     </php>
 

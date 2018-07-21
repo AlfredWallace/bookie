@@ -1,18 +1,21 @@
 <?php
+$envMode = ' -e test ';
+$exec = ' php "%s/../bin/console" ';
+
 passthru(sprintf(
-    'php "%s/../bin/console" cache:clear --env=test',
+    $exec . 'cache:clear' . $envMode,
     __DIR__
 ));
 passthru(sprintf(
-    'php "%s/../bin/console" doctrine:schema:drop --env=test --force',
+    $exec . 'doctrine:schema:drop  --force' . $envMode,
     __DIR__
 ));
 passthru(sprintf(
-    'php "%s/../bin/console" doctrine:schema:update --env=test --force',
+    $exec . 'doctrine:schema:update  --force' . $envMode,
     __DIR__
 ));
 passthru(sprintf(
-    'php "%s/../bin/console" doctrine:fixtures:load -n --env=test',
+    $exec . 'doctrine:fixtures:load -n' . $envMode,
     __DIR__
 ));
 require __DIR__.'/../vendor/autoload.php';
