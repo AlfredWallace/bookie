@@ -71,6 +71,9 @@
             "ref": "c1431086fec31f17fbcfe6d6d7e92059458facc1"
         }
     },
+    "doctrine/event-manager": {
+        "version": "v1.0.0"
+    },
     "doctrine/inflector": {
         "version": "v1.3.0"
     },
@@ -85,6 +88,12 @@
     },
     "doctrine/orm": {
         "version": "v2.6.1"
+    },
+    "doctrine/persistence": {
+        "version": "v1.0.0"
+    },
+    "doctrine/reflection": {
+        "version": "v1.0.0"
     },
     "exsyst/swagger": {
         "version": "v0.4.0"
@@ -127,6 +136,9 @@
             "version": "2.0",
             "ref": "fe60ce509ef04a3f40da96e3979bc8d9b13b2372"
         }
+    },
+    "lcobucci/jwt": {
+        "version": "3.2.2"
     },
     "lexik/jwt-authentication-bundle": {
         "version": "2.3",
@@ -194,15 +206,6 @@
             "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
         }
     },
-    "symfony/apache-pack": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "c82bead70f9a4f656354a193df7bf0ca2114efa0"
-        }
-    },
     "symfony/asset": {
         "version": "v4.0.8"
     },
@@ -228,9 +231,6 @@
         "version": "v4.0.6"
     },
     "symfony/doctrine-bridge": {
-        "version": "v4.0.6"
-    },
-    "symfony/dotenv": {
         "version": "v4.0.6"
     },
     "symfony/event-dispatcher": {
