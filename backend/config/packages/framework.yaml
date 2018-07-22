@@ -31,3 +31,5 @@ framework:
     templating:
         enabled: true
         engines: twig
+
+    test: ~

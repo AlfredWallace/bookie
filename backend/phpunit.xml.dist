@@ -8,32 +8,15 @@
          bootstrap="tests/bootstrap.php"
 >
     <php>
-        <ini name="error_reporting" value="-1" />
-        <env name="KERNEL_CLASS" value="App\Kernel" />
-        <env name="APP_ENV" value="test" />
-        <env name="APP_DEBUG" value="1" />
-        <env name="APP_SECRET" value="s$cretf0rt3st" />
-        <env name="SHELL_VERBOSITY" value="0" />
+        <ini name="error_reporting" value="0" force="true"/>
+        <env name="KERNEL_CLASS" value="App\Kernel" force="true"/>
+        <env name="APP_ENV" value="test" force="true"/>
+        <env name="APP_DEBUG" value="1" force="true"/>
+        <env name="SHELL_VERBOSITY" value="0" force="true"/>
         <!-- define your env variables for the test env here -->
 
-        <!-- ###+ lexik/jwt-authentication-bundle ### -->
-        <!-- Key paths should be relative to the project directory -->
-        <env name="JWT_PRIVATE_KEY_PATH" value="config/jwt/private.pem"/>
-        <env name="JWT_PUBLIC_KEY_PATH" value="config/jwt/public.pem"/>
-        <env name="JWT_PASSPHRASE" value="r4nd0mstr1ng"/>
-        <env name="JWT_TOKEN_TTL" value="3600"/>
-        <!-- ###- lexik/jwt-authentication-bundle ### -->
-
-        <!-- ###+ nelmio/cors-bundle ### -->
-        <env name="CORS_ALLOW_ORIGIN" value="^https?://localhost:?[0-9]*$"/>
-        <!-- ###- nelmio/cors-bundle ### -->
-
-        <!-- ###+ API URL ### -->
-        <env name="TEST_API_URL" value="http://localhost:8000"/>
-        <!-- ###- API URL ### -->
-
         <!-- ###+ doctrine ### -->
-        <env name="TEST_DATABASE_URL" value="mysql://user:pass@host:port/database"/>
+        <env name="TEST_DATABASE_URL" value="mysql://user:pass@host:port/database" force="true"/>
         <!-- ###- doctrine ### -->
     </php>
 
