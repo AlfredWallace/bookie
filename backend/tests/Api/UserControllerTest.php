@@ -277,20 +277,21 @@ class UserControllerTest extends ApiTestCase
      * @param $oldUser
      * @param $newUser
      */
-    public function testUpdateSelf($oldUser, $newUser)
+    public function testUpdateSelfById($oldUser, $newUser)
     {
         $token = $this->getToken($oldUser);
-        $response = $this->apiRequest('get', '/users/username/' . $oldUser['username'], $token);
+
+        $this->get('/users/username/' . $oldUser['username'], $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $body = $this->getBody($response);
         $this->assertArrayHasKey('id', $body);
 
-        $response = $this->apiRequest(
-            'put',
-            '/users/' . $body['id'],
-            $token,
-            ['json' => $newUser,]
-        );
+        $this->put('/users/' . $body['id'], $token, [
+            'username' => $newUser['username'] ?? null,
+            'password' => $newUser['password'] ?? null,
+        ]);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->userResponseAssertions($newUser, $this->getBody($response));
     }
@@ -302,12 +303,11 @@ class UserControllerTest extends ApiTestCase
      */
     public function testUpdateSelfByUsername($oldUser, $newUser)
     {
-        $response = $this->apiRequest(
-            'put',
-            '/users/username/' . $oldUser['username'],
-            $this->getToken($oldUser),
-            ['json' => $newUser,]
-        );
+        $this->put('/users/username/' . $oldUser['username'], $this->getToken($oldUser), [
+            'username' => $newUser['username'] ?? null,
+            'password' => $newUser['password'] ?? null,
+        ]);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->userResponseAssertions($newUser, $this->getBody($response));
     }
@@ -317,16 +317,22 @@ class UserControllerTest extends ApiTestCase
      * @param $oldUser
      * @param $newUser
      */
-    public function testUpdateUser($oldUser, $newUser)
+    public function testUpdateUserById($oldUser, $newUser)
     {
         $requester = UserProvider::mainUser()['main']['user'];
         $token = $this->getToken($requester);
-        $response = $this->apiRequest('get', '/users/username/' . $oldUser['username'], $token);
+
+        $this->get('/users/username/' . $oldUser['username'], $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $body = $this->getBody($response);
         $this->assertArrayHasKey('id', $body);
 
-        $response = $this->apiRequest('put', '/users/' . $body['id'], $token, ['json' => $newUser,]);
+        $this->put('/users/' . $body['id'], $token, [
+            'username' => $newUser['username'] ?? null,
+            'password' => $newUser['password'] ?? null,
+        ]);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->userResponseAssertions($newUser, $this->getBody($response));
     }
@@ -339,12 +345,12 @@ class UserControllerTest extends ApiTestCase
     public function testUpdateUserByUsername($oldUser, $newUser)
     {
         $requester = UserProvider::mainUser()['main']['user'];
-        $response = $this->apiRequest(
-            'put',
-            '/users/username/' . $oldUser['username'],
-            $this->getToken($requester),
-            ['json' => $newUser,]
-        );
+
+        $this->put('/users/username/' . $oldUser['username'], $this->getToken($requester), [
+            'username' => $newUser['username'] ?? null,
+            'password' => $newUser['password'] ?? null,
+        ]);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->userResponseAssertions($newUser, $this->getBody($response));
     }
@@ -354,21 +360,22 @@ class UserControllerTest extends ApiTestCase
      * @dataProvider \App\Providers\Tests\UserProvider::additionalUsers()
      * @param $user
      */
-    public function testUpdateOtherUser($user)
+    public function testUpdateOtherUserById($user)
     {
         $requester = UserProvider::otherUser()['other']['user'];
         $token = $this->getToken($requester);
-        $response = $this->apiRequest('get', '/users/username/' . $user['username'], $token);
+
+        $this->get('/users/username/' . $user['username'], $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $body = $this->getBody($response);
         $this->assertArrayHasKey('id', $body);
 
-        $response = $this->apiRequest(
-            'put',
-            '/users/' . $body['id'],
-            $token,
-            ['json' => $requester,]
-        );
+        $this->put('/users/' . $body['id'], $token, [
+            'username' => $requester['username'] ?? null,
+            'password' => $requester['password'] ?? null,
+        ]);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
 
@@ -380,12 +387,12 @@ class UserControllerTest extends ApiTestCase
     public function testUpdateOtherUserByUsername($user)
     {
         $requester = UserProvider::otherUser()['other']['user'];
-        $response = $this->apiRequest(
-            'put',
-            '/users/username/' . $user['username'],
-            $this->getToken($requester),
-            ['json' => $requester,]
-        );
+
+        $this->put('/users/username/' . $user['username'], $this->getToken($requester), [
+            'username' => $requester['username'] ?? null,
+            'password' => $requester['password'] ?? null,
+        ]);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
 
@@ -393,14 +400,10 @@ class UserControllerTest extends ApiTestCase
      * @dataProvider \App\Providers\Tests\UserProvider::mainUser()
      * @param $user
      */
-    public function testUpdateUnexistentUser($user)
+    public function testUpdateUnexistentUserById($user)
     {
-        $response = $this->apiRequest(
-            'put',
-            '/users/' . self::UNEXISTENT_ID,
-            $this->getToken($user),
-            ['json' => [],]
-        );
+        $this->put('/users/' . self::UNEXISTENT_ID, $this->getToken($user), []);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
@@ -410,12 +413,8 @@ class UserControllerTest extends ApiTestCase
      */
     public function testUpdateUnexistentUserByUsername($user)
     {
-        $response = $this->apiRequest(
-            'put',
-            '/users/username/' . self::UNEXISTENT_USERNAME,
-            $this->getToken($user),
-            ['json' => [],]
-        );
+        $this->put('/users/username/' . self::UNEXISTENT_USERNAME, $this->getToken($user), []);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
@@ -423,22 +422,19 @@ class UserControllerTest extends ApiTestCase
      * @dataProvider \App\Providers\Tests\UserProvider::invalidUsers()
      * @param $invalidData
      */
-    public function testUpdateUserWithInvalidData($invalidData)
+    public function testUpdateUserWithInvalidDataById($invalidData)
     {
         $user = UserProvider::otherUser()['other']['user'];
         $token = $this->getToken($user);
 
-        $response = $this->apiRequest('get', '/users/username/' . $user['username'], $token);
+        $this->get('/users/username/' . $user['username'], $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $body = $this->getBody($response);
         $this->assertArrayHasKey('id', $body);
 
-        $response = $this->apiRequest(
-            'put',
-            '/users/' . $body['id'],
-            $token,
-            ['json' => $invalidData,]
-        );
+        $this->put('/users/' . $body['id'], $token, $invalidData);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
@@ -449,12 +445,9 @@ class UserControllerTest extends ApiTestCase
     public function testUpdateUserWithInvalidDataByUsername($invalidData)
     {
         $user = UserProvider::otherUser()['other']['user'];
-        $response = $this->apiRequest(
-            'put',
-            '/users/username/' . $user['username'],
-            $this->getToken($user),
-            ['json' => $invalidData,]
-        );
+
+        $this->put('/users/username/' . $user['username'], $this->getToken($user), $invalidData);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 }
