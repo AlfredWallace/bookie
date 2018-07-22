@@ -135,9 +135,11 @@ class UserControllerTest extends ApiTestCase
      */
     public function testCreateUser($user)
     {
-        $response = $this->apiRequest('post', '/users/new', null, [
-            'json' => $user,
+        $this->post('/users/new', null, [
+            'username' => $user['username'] ?? null,
+            'password' => $user['password'] ?? null,
         ]);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $this->userResponseAssertions($user, $this->getBody($response));
     }
@@ -148,9 +150,11 @@ class UserControllerTest extends ApiTestCase
      */
     public function testCreateInvalidUser($user)
     {
-        $response = $this->apiRequest('post', '/users/new', null, [
-            'json' => $user,
+        $this->post('/users/new', null, [
+            'username' => $user['username'] ?? null,
+            'password' => $user['password'] ?? null,
         ]);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
