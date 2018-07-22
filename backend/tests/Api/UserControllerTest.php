@@ -13,9 +13,11 @@ class UserControllerTest extends ApiTestCase
 
     private function getToken($user)
     {
-        $response = $this->client->post('/login_check', [
-            'json' => $user,
+        $this->post('/login_check', [
+            'username' => $user['username'] ?? null,
+            'password' => $user['password'] ?? null,
         ]);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $body = $this->getBody($response);
         $this->assertArrayHasKey('token', $body);
@@ -26,7 +28,7 @@ class UserControllerTest extends ApiTestCase
      * @dataProvider \App\Providers\Tests\UserProvider::additionalUsers()
      * @param $user
      */
-    public function testFetchToken($user)
+    public function testFetchTokenOnly($user)
     {
         $this->getToken($user);
     }
@@ -37,13 +39,11 @@ class UserControllerTest extends ApiTestCase
      */
     public function testFetchTokenWithBadUsername($user)
     {
-        $response = $this->client->post('/login_check', [
-            'json' => [
-                'username' => 'mock' . $user['username'],
-                'password' => $user['password'],
-            ],
+        $this->post('/login_check', [
+            'username' => 'dummy' . $user['username'],
+            'password' => $user['password'],
         ]);
-        $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_UNAUTHORIZED, self::$staticClient->getResponse()->getStatusCode());
     }
 
     /**
@@ -52,13 +52,11 @@ class UserControllerTest extends ApiTestCase
      */
     public function testFetchTokenWithBadPassword($user)
     {
-        $response = $this->client->post('/login_check', [
-            'json' => [
-                'username' => $user['username'],
-                'password' => 'mock' . $user['password'],
-            ],
+        $this->post('/login_check', [
+            'username' => $user['username'],
+            'password' => 'dummy' . $user['password'],
         ]);
-        $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
+        $this->assertEquals(Response::HTTP_UNAUTHORIZED, self::$staticClient->getResponse()->getStatusCode());
     }
 
     private function userResponseAssertions($user, $responseBody, $id = false)
@@ -281,7 +279,7 @@ class UserControllerTest extends ApiTestCase
             'put',
             '/users/' . $body['id'],
             $token,
-            [ 'json' => $newUser, ]
+            ['json' => $newUser,]
         );
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->userResponseAssertions($newUser, $this->getBody($response));
@@ -298,7 +296,7 @@ class UserControllerTest extends ApiTestCase
             'put',
             '/users/username/' . $oldUser['username'],
             $this->getToken($oldUser),
-            [ 'json' => $newUser, ]
+            ['json' => $newUser,]
         );
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->userResponseAssertions($newUser, $this->getBody($response));
@@ -318,7 +316,7 @@ class UserControllerTest extends ApiTestCase
         $body = $this->getBody($response);
         $this->assertArrayHasKey('id', $body);
 
-        $response = $this->apiRequest('put', '/users/' . $body['id'], $token, [ 'json' => $newUser, ]);
+        $response = $this->apiRequest('put', '/users/' . $body['id'], $token, ['json' => $newUser,]);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->userResponseAssertions($newUser, $this->getBody($response));
     }
@@ -335,7 +333,7 @@ class UserControllerTest extends ApiTestCase
             'put',
             '/users/username/' . $oldUser['username'],
             $this->getToken($requester),
-            [ 'json' => $newUser, ]
+            ['json' => $newUser,]
         );
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->userResponseAssertions($newUser, $this->getBody($response));
@@ -359,7 +357,7 @@ class UserControllerTest extends ApiTestCase
             'put',
             '/users/' . $body['id'],
             $token,
-            [ 'json' => $requester, ]
+            ['json' => $requester,]
         );
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
@@ -376,7 +374,7 @@ class UserControllerTest extends ApiTestCase
             'put',
             '/users/username/' . $user['username'],
             $this->getToken($requester),
-            [ 'json' => $requester, ]
+            ['json' => $requester,]
         );
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
@@ -391,7 +389,7 @@ class UserControllerTest extends ApiTestCase
             'put',
             '/users/' . self::UNEXISTENT_ID,
             $this->getToken($user),
-            [ 'json' => [], ]
+            ['json' => [],]
         );
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
@@ -406,7 +404,7 @@ class UserControllerTest extends ApiTestCase
             'put',
             '/users/username/' . self::UNEXISTENT_USERNAME,
             $this->getToken($user),
-            [ 'json' => [], ]
+            ['json' => [],]
         );
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
@@ -429,7 +427,7 @@ class UserControllerTest extends ApiTestCase
             'put',
             '/users/' . $body['id'],
             $token,
-            [ 'json' => $invalidData, ]
+            ['json' => $invalidData,]
         );
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
@@ -445,7 +443,7 @@ class UserControllerTest extends ApiTestCase
             'put',
             '/users/username/' . $user['username'],
             $this->getToken($user),
-            [ 'json' => $invalidData, ]
+            ['json' => $invalidData,]
         );
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
