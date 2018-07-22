@@ -63,7 +63,6 @@ class UserControllerTest extends ApiTestCase
         $this->assertArrayHasKey('id', $responseBody);
         $this->assertArrayHasKey('username', $responseBody);
         $this->assertArrayNotHasKey('password', $responseBody);
-        $this->assertArrayNotHasKey('roles', $responseBody);
         $this->assertEquals($user['username'], $responseBody['username']);
         if ($id !== false) {
             $this->assertEquals($id, $responseBody['id']);

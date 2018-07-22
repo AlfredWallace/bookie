@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -59,7 +59,7 @@ class Match
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Team")
      * @ORM\JoinColumn(nullable=false)
-     * @Serializer\Groups({"match.teams"})
+     * @Groups({"match.teams"})
      *
      * @var Team
      */
@@ -68,7 +68,7 @@ class Match
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Team")
      * @ORM\JoinColumn(nullable=false)
-     * @Serializer\Groups({"match.teams"})
+     * @Groups({"match.teams"})
      *
      * @var Team
      */
@@ -92,7 +92,7 @@ class Match
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Bet", mappedBy="match")
-     * @Serializer\Groups({"match.bets"})
+     * @Groups({"match.bets"})
      */
     protected $bets;
 

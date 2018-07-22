@@ -8,12 +8,10 @@ use App\Exception\DuplicateRessourceException;
 use App\Factory\UserFactory;
 use App\Repository\UserRepository;
 use App\Serializer\ConstraintViolationUtilityTrait;
-use App\Service\AlternativePointsCalculator;
 use App\Service\BasicPointsCalculator;
 use Doctrine\ORM\EntityNotFoundException;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Routing\Annotation\Route;
@@ -41,15 +39,11 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Route("/users/new", name="bookie_users_create")
-     * @Method({"POST"})
-     * @Rest\View(statusCode=201, serializerGroups={"Default"})
+     * @Rest\Route("/users/new", name="bookie_users_create", methods={"POST"})
+     * @Rest\View(statusCode=201, serializerGroups={"user.default"})
      * @ParamConverter(
      *     "user",
-     *     converter="fos_rest.request_body",
-     *     options={
-     *          "validator"={ "groups"="create" }
-     *     }
+     *     converter="fos_rest.request_body"
      * )
      *
      * @param User $user
@@ -79,15 +73,11 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Route("/users/{id}", name="bookie_users_update", requirements={"id"="\d+"})
-     * @Method({"PUT"})
-     * @Rest\View(statusCode=200, serializerGroups={"Default"})
+     * @Rest\Route("/users/{id}", name="bookie_users_update", requirements={"id"="\d+"}, methods={"PUT"})
+     * @Rest\View(statusCode=200, serializerGroups={"user.default"})
      * @ParamConverter(
      *     "requestUser",
-     *     converter="fos_rest.request_body",
-     *     options={
-     *          "validator"={ "groups"="update" }
-     *     }
+     *     converter="fos_rest.request_body"
      * )
      * @Security("is_granted('ROLE_ADMIN') or id == user.getId()")
      *
@@ -119,15 +109,11 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Route("/users/username/{username}", name="bookie_users_update_by_username")
-     * @Method({"PUT"})
-     * @Rest\View(statusCode=200, serializerGroups={"Default"})
+     * @Rest\Route("/users/username/{username}", name="bookie_users_update_by_username", methods={"PUT"})
+     * @Rest\View(statusCode=200, serializerGroups={"user.default"})
      * @ParamConverter(
      *     "requestUser",
-     *     converter="fos_rest.request_body",
-     *     options={
-     *          "validator"={ "groups"="update" }
-     *     }
+     *     converter="fos_rest.request_body"
      * )
      * @Security("is_granted('ROLE_ADMIN') or username == user.getUsername()")
      *
@@ -159,9 +145,8 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Route("/users/{id}", name="bookie_users_show", requirements={"id"="\d+"})
-     * @Method({"GET"})
-     * @Rest\View(statusCode=200, serializerGroups={"Default"})
+     * @Rest\Route("/users/{id}", name="bookie_users_show", requirements={"id"="\d+"}, methods={"GET"})
+     * @Rest\View(statusCode=200, serializerGroups={"user.default"})
      *
      * @param User $user
      * @return mixed
@@ -176,9 +161,8 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Route("/users/username/{username}", name="bookie_users_show_by_username")
-     * @Method({"GET"})
-     * @Rest\View(statusCode=200, serializerGroups={"Default"})
+     * @Rest\Route("/users/username/{username}", name="bookie_users_show_by_username", methods={"GET"})
+     * @Rest\View(statusCode=200, serializerGroups={"user.default"})
      *
      * @param User $user
      * @return mixed
@@ -193,9 +177,8 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Route("/users", name="bookie_users_list")
-     * @Method({"GET"})
-     * @Rest\View(statusCode=200, serializerGroups={"Default"})
+     * @Rest\Route("/users", name="bookie_users_list", methods={"GET"})
+     * @Rest\View(statusCode=200, serializerGroups={"user.default"})
      *
      * @throws \Doctrine\ORM\Query\QueryException
      */
@@ -203,61 +186,9 @@ class UserController extends FOSRestController
     {
         return $this->userRepository->findAllIndexedById();
     }
-//
-//    /**
-//     * @Rest\Route("/users-bets-stats", name="bookie_users_bets_stats_list")
-//     * @Method({"GET"})
-//     * @return JsonResponse
-//     */
-//    public function listWithBetsStats()
-//    {
-//        $users =  $this->getDoctrine()->getManager()->getRepository('App:User')->findBy([], [
-//            'points' => 'DESC',
-//            'username' => 'ASC',
-//        ]);
-//        $usersArray = [];
-//
-//        foreach ($users as $user) {
-//            $userData = json_decode(
-//                $this->serializer->serialize(
-//                    $user,
-//                    'json',
-//                    SerializationContext::create()->setGroups(['Default'])
-//                ),
-//                true
-//            );
-//
-//            $userData['nbBets'] = 0;
-//            $userData['nbWins'] = 0;
-//            $userData['nbPerfects'] = 0;
-//
-//            /** @var Bet $bet */
-//            foreach ($user->getBets() as $bet) {
-//                $match = $bet->getMatch();
-//
-//                if ($match->isOver()) {
-//                    $userData['nbBets']++;
-//
-//                    if ($bet->getPoints() > 0) {
-//                        $userData['nbWins']++;
-//                    }
-//
-//                    if ($bet->getHomeScore() === $match->getHomeScore()
-//                        && $bet->getAwayScore() === $match->getAwayScore()) {
-//                        $userData['nbPerfects']++;
-//                    }
-//                }
-//            }
-//
-//            $usersArray[] = $userData;
-//        }
-//
-//        return new JsonResponse($usersArray);
-//    }
 
     /**
-     * @Rest\Route("/users/{id}", name="bookie_users_remove", requirements={"id"="\d+"})
-     * @Method({"DELETE"})
+     * @Rest\Route("/users/{id}", name="bookie_users_remove", requirements={"id"="\d+"}, methods={"DELETE"})
      * @Rest\View(statusCode=204)
      * @Security("is_granted('ROLE_ADMIN') or id == user.getId()")
      *
@@ -275,8 +206,7 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Route("/users/username/{username}", name="bookie_users_remove_by_username")
-     * @Method({"DELETE"})
+     * @Route("/users/username/{username}", name="bookie_users_remove_by_username", methods={"DELETE"})
      * @Rest\View(statusCode=204)
      * @Security("is_granted('ROLE_ADMIN') or username == user.getUsername()")
      *
@@ -294,18 +224,13 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Route("/users/refresh-all-points", name="bookie_users_refresh_all_points")
-     * @Method({"POST"})
+     * @Rest\Route("/users/refresh-all-points", name="bookie_users_refresh_all_points", methods={"POST"})
      * @Rest\View(statusCode=204)
      * @Security("is_granted('ROLE_ADMIN')")
      *
      * @param BasicPointsCalculator $basicCalculator
-     * @param AlternativePointsCalculator $alternativeCalculator
      */
-    public function refreshAllPoints(
-        BasicPointsCalculator $basicCalculator,
-        AlternativePointsCalculator $alternativeCalculator
-    )
+    public function refreshAllPoints(BasicPointsCalculator $basicCalculator)
     {
         $em = $this->getDoctrine()->getManager();
         /** @var User $user */
@@ -313,11 +238,9 @@ class UserController extends FOSRestController
             /** @var Bet $bet */
             foreach ($user->getBets() as $bet) {
                 $bet->setPoints($basicCalculator->getBetPoints($bet));
-                $bet->setPointsAlternative($alternativeCalculator->getBetPoints($bet));
             }
 
             $user->setPoints($basicCalculator->getUserPoints($user));
-            $user->setPointsAlternative($alternativeCalculator->getUserPoints($user));
         }
 
         $em->flush();

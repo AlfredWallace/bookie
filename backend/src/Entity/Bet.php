@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\UniqueConstraint;
-use JMS\Serializer\Annotation as Serializer;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Class Bet
@@ -28,7 +28,7 @@ class Bet
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="bets")
      * @ORM\JoinColumn(nullable=false)
-     * @Serializer\Groups({"bet.user"})
+     * @Groups({"bet.user"})
      *
      * @var User
      */
@@ -37,7 +37,7 @@ class Bet
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Match", inversedBy="bets")
      * @ORM\JoinColumn(nullable=false)
-     * @Serializer\Groups({"bet.match"})
+     * @Groups({"bet.match"})
      *
      * @var Match
      */
