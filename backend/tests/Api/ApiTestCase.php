@@ -96,7 +96,12 @@ abstract class ApiTestCase extends WebTestCase
             $server['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
         }
 
-        return self::$staticClient->request($method, $uri, $parameters, [], $server, json_encode($content));
+        $encodedContent = $content;
+        if ($encodedContent !== null) {
+            $encodedContent = json_encode($encodedContent);
+        }
+
+        return self::$staticClient->request($method, $uri, $parameters, [], $server, $encodedContent);
     }
 
     protected function getBody(Response $response)

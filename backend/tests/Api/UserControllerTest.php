@@ -162,16 +162,18 @@ class UserControllerTest extends ApiTestCase
      * @dataProvider \App\Providers\Tests\UserProvider::usersToSelfDelete()
      * @param $user
      */
-    public function testDeleteSelf($user)
+    public function testDeleteSelfById($user)
     {
         $token = $this->getToken($user);
 
-        $response = $this->apiRequest('get', '/users/username/' . $user['username'], $token);
+        $this->get('/users/username/' . $user['username'], $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $body = $this->getBody($response);
         $this->assertArrayHasKey('id', $body);
 
-        $response = $this->apiRequest('delete', '/users/' . $body['id'], $token);
+        $this->delete('/users/' . $body['id'], $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 
@@ -181,7 +183,8 @@ class UserControllerTest extends ApiTestCase
      */
     public function testDeleteSelfByUsername($user)
     {
-        $response = $this->apiRequest('delete', '/users/username/' . $user['username'], $this->getToken($user));
+        $this->delete('/users/username/' . $user['username'], $this->getToken($user));
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 
@@ -189,16 +192,18 @@ class UserControllerTest extends ApiTestCase
      * @dataProvider \App\Providers\Tests\UserProvider::usersToDelete()
      * @param $user
      */
-    public function testDeleteUser($user)
+    public function testDeleteUserById($user)
     {
         $token = $this->getToken(UserProvider::mainUser()['main']['user']);
 
-        $response = $this->apiRequest('get', '/users/username/' . $user['username'], $token);
+        $this->get('/users/username/' . $user['username'], $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $body = $this->getBody($response);
         $this->assertArrayHasKey('id', $body);
 
-        $response = $this->apiRequest('delete', '/users/' . $body['id'], $token);
+        $this->delete('/users/' . $body['id'], $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 
@@ -208,11 +213,8 @@ class UserControllerTest extends ApiTestCase
      */
     public function testDeleteUserByUsername($user)
     {
-        $response = $this->apiRequest(
-            'delete',
-            '/users/username/' . $user['username'],
-            $this->getToken(UserProvider::mainUser()['main']['user'])
-        );
+        $this->delete('/users/username/' . $user['username'], $this->getToken(UserProvider::mainUser()['main']['user']));
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 
@@ -220,9 +222,10 @@ class UserControllerTest extends ApiTestCase
      * @dataProvider \App\Providers\Tests\UserProvider::mainUser()
      * @param $user
      */
-    public function testDeleteUnexistentUser($user)
+    public function testDeleteUnexistentUserById($user)
     {
-        $response = $this->apiRequest('delete', '/users/' . self::UNEXISTENT_ID, $this->getToken($user));
+        $this->delete('/users/' . self::UNEXISTENT_ID, $this->getToken($user));
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
@@ -232,7 +235,8 @@ class UserControllerTest extends ApiTestCase
      */
     public function testDeleteUnexistentUserByUsername($user)
     {
-        $response = $this->apiRequest('delete', '/users/username/' . self::UNEXISTENT_USERNAME, $this->getToken($user));
+        $this->delete('/users/username/' . self::UNEXISTENT_USERNAME, $this->getToken($user));
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
@@ -241,16 +245,18 @@ class UserControllerTest extends ApiTestCase
      * @dataProvider \App\Providers\Tests\UserProvider::additionalUsers()
      * @param $user
      */
-    public function testDeleteOtherUser($user)
+    public function testDeleteOtherUserById($user)
     {
         $token = $this->getToken(UserProvider::otherUser()['other']['user']);
 
-        $response = $this->apiRequest('get', '/users/username/' . $user['username'], $token);
+        $this->get('/users/username/' . $user['username'], $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $body = $this->getBody($response);
         $this->assertArrayHasKey('id', $body);
 
-        $response = $this->apiRequest('delete', '/users/' . $body['id'], $token);
+        $this->delete('/users/' . $body['id'], $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
 
@@ -261,11 +267,8 @@ class UserControllerTest extends ApiTestCase
      */
     public function testDeleteOtherUserByUsername($user)
     {
-        $response = $this->apiRequest(
-            'delete',
-            '/users/username/' . $user['username'],
-            $this->getToken(UserProvider::otherUser()['other']['user'])
-        );
+        $this->delete('/users/username/' . $user['username'], $this->getToken(UserProvider::otherUser()['other']['user']));
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
 
