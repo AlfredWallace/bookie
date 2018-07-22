@@ -2,7 +2,6 @@
 
 namespace App\Tests\Api;
 
-
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -67,38 +66,37 @@ abstract class ApiTestCase extends WebTestCase
 //        }
     }
 
-    protected function get(string $uri, array $parameters = [], array $server = []): Crawler
+    protected function get(string $uri, ?string $token = null, array $parameters = []): Crawler
     {
-        return $this->apiRequest('GET', $uri, $parameters, $server, null);
+        return $this->apiRequest('GET', $uri, $token, $parameters, null);
     }
 
-    protected function post(string $uri, $content = null, array $parameters = [], array $server = []): Crawler
+    protected function post(string $uri, ?string $token = null, $content = null, array $parameters = []): Crawler
     {
-        return $this->apiRequest('POST', $uri, $parameters, $server, $content);
+        return $this->apiRequest('POST', $uri, $token, $parameters, $content);
     }
 
-    protected function put(string $uri, $content = null, array $parameters = [], array $server = []): Crawler
+    protected function put(string $uri, ?string $token = null, $content = null, array $parameters = []): Crawler
     {
-        return $this->apiRequest('PUT', $uri, $parameters, $server, $content);
+        return $this->apiRequest('PUT', $uri, $token, $parameters, $content);
     }
 
-    protected function delete(string $uri, array $parameters = [], array $server = []): Crawler
+    protected function delete(string $uri, ?string $token = null, array $parameters = []): Crawler
     {
-        return $this->apiRequest('DELETE', $uri, $parameters, $server, null);
+        return $this->apiRequest('DELETE', $uri, $token, $parameters, null);
     }
 
-    private function apiRequest(string $method, string $uri, array $parameters, array $server, $content): Crawler
+    private function apiRequest(string $method, string $uri, ?string $token, array $parameters, $content): Crawler
     {
-        return self::$staticClient->request(
-            $method,
-            $uri,
-            $parameters,
-            [],
-            array_merge($server, [
-                'CONTENT_TYPE' => 'application/json'
-            ]),
-            json_encode($content)
-        );
+        $server = [
+            'CONTENT_TYPE' => 'application/json'
+        ];
+
+        if ($token !== null) {
+            $server['HTTP_AUTHORIZATION'] = 'Bearer ' . $token;
+        }
+
+        return self::$staticClient->request($method, $uri, $parameters, [], $server, json_encode($content));
     }
 
     protected function getBody(Response $response)

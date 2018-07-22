@@ -2,7 +2,6 @@
 
 namespace App\Tests\Api;
 
-
 use App\Providers\Tests\UserProvider;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -13,7 +12,7 @@ class UserControllerTest extends ApiTestCase
 
     private function getToken($user)
     {
-        $this->post('/login_check', [
+        $this->post('/login_check', null, [
             'username' => $user['username'] ?? null,
             'password' => $user['password'] ?? null,
         ]);
@@ -39,7 +38,7 @@ class UserControllerTest extends ApiTestCase
      */
     public function testFetchTokenWithBadUsername($user)
     {
-        $this->post('/login_check', [
+        $this->post('/login_check', null, [
             'username' => 'dummy' . $user['username'],
             'password' => $user['password'],
         ]);
@@ -52,7 +51,7 @@ class UserControllerTest extends ApiTestCase
      */
     public function testFetchTokenWithBadPassword($user)
     {
-        $this->post('/login_check', [
+        $this->post('/login_check', null, [
             'username' => $user['username'],
             'password' => 'dummy' . $user['password'],
         ]);
@@ -74,14 +73,16 @@ class UserControllerTest extends ApiTestCase
     private function fetchUser($token, $user)
     {
         // Getting the user by username
-        $response = $this->apiRequest('get', '/users/username/' . $user['username'], $token);
+        $this->get('/users/username/' . $user['username'], $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $body = $this->getBody($response);
         $this->userResponseAssertions($user, $body);
 
         // Getting the user by ID
         $id = $body['id'];
-        $response = $this->apiRequest('get', '/users/' . $id, $token);
+        $this->get('/users/' . $id, $token);
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->userResponseAssertions($user, $this->getBody($response), $id);
     }
@@ -112,7 +113,8 @@ class UserControllerTest extends ApiTestCase
      */
     public function testGetUnexistentUserById($user)
     {
-        $response = $this->apiRequest('get', '/users/' . self::UNEXISTENT_ID, $this->getToken($user));
+        $this->get('/users/' . self::UNEXISTENT_ID, $this->getToken($user));
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
@@ -122,7 +124,8 @@ class UserControllerTest extends ApiTestCase
      */
     public function testGetUnexistentUserByUsername($user)
     {
-        $response = $this->apiRequest('get', '/users/username/' . self::UNEXISTENT_USERNAME, $this->getToken($user));
+        $this->get('/users/username/' . self::UNEXISTENT_USERNAME, $this->getToken($user));
+        $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
