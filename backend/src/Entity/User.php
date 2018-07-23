@@ -29,7 +29,7 @@ class User implements UserInterface
      *
      * @Groups({"user.default"})
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Le login ne peut pas être vide")
      * @Assert\Length(
      *     min="3",
      *     minMessage="Le login doit faire au moins 3 caractères.",
@@ -38,7 +38,7 @@ class User implements UserInterface
      * )
      * @Assert\Regex(
      *     pattern="/^[A-Za-z0-9_. -]+$/",
-     *     message="Le login peut contenir des lettres, des chiffres, des espaces, ou les 3 caractères spéciaux suivants : . - _"
+     *     message="Le login peut contenir des lettres, des chiffres, des espaces, ou les 3 caractères spéciaux suivants : _.-"
      * )
      * @Assert\Regex(
      *     pattern="/^[A-Za-z].+/",
@@ -52,10 +52,16 @@ class User implements UserInterface
      *
      * @Groups({"user.sensitive"})
      *
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="Le mot de passe ne peut pas être vide")
      * @Assert\Length(
+     *     min="4",
+     *     minMessage="Le mot de passe doit faire au moins 4 caractères.",
      *     max="64",
      *     maxMessage="Le mot de passe doit faire au plus 64 caractères."
+     * )
+     * @Assert\Regex(
+     *     pattern="/^[A-Za-z0-9!@#$%&_.-]+$/",
+     *     message="Le mot de passe peut contenir des lettres, des chiffres, ou les caractères spéciaux suivants : !@#$%&_.-"
      * )
      */
     private $password;

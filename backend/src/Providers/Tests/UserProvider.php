@@ -432,14 +432,38 @@ class UserProvider
             ],
             [
                 'invalid_data' => [
+                    'username' => 'ok',
+                    'password' => 'johnDoeP4ss',
+                ],
+            ],
+            [
+                'invalid_data' => [
                     'username' => 'inv@lid#ch@rs!',
                     'password' => 'johnDoeP4ss',
                 ],
             ],
             [
                 'invalid_data' => [
-                    'username' => '&thisStartsBadly',
+                    'username' => '0thisStartsBadly',
                     'password' => 'johnDoeP4ss',
+                ],
+            ],
+            [
+                'invalid_data' => [
+                    'username' => 'i-need-a-name',
+                    'password' => 'invalid chars',
+                ],
+            ],
+            [
+                'invalid_data' => [
+                    'username' => 'i-need-a-name',
+                    'password' => 'password-too-long-0123456789-0123456789-0123456789-0123456789-0123456789',
+                ],
+            ],
+            [
+                'invalid_data' => [
+                    'username' => 'i-need-a-name',
+                    'password' => '123',
                 ],
             ],
         ];
