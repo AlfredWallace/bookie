@@ -4,13 +4,11 @@ namespace App\DataFixtures;
 
 use App\Factory\UserFactory;
 use App\Providers\Tests\UserProvider;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class UserFixtures extends AbstractEnvironmentFixture
+class UserFixtures extends Fixture
 {
-    /**
-     * @var UserFactory
-     */
     private $userFactory;
 
     public function __construct(UserFactory $userFactory)
@@ -19,14 +17,7 @@ class UserFixtures extends AbstractEnvironmentFixture
         $this->userFactory = $userFactory;
     }
 
-    /**
-     * Performs the actual fixtures loading.
-     *
-     * @see \Doctrine\Common\DataFixtures\FixtureInterface::load()
-     *
-     * @param ObjectManager $manager The object manager.
-     */
-    protected function doLoad(ObjectManager $manager)
+    public function load(ObjectManager $manager)
     {
         $mainUser = UserProvider::mainUser()['main']['user'];
         $mainUserObject = $this->userFactory->create(
@@ -41,15 +32,5 @@ class UserFixtures extends AbstractEnvironmentFixture
             $manager->persist($userObject);
         }
         $manager->flush();
-    }
-
-    /**
-     * Returns the environments the fixtures may be loaded in.
-     *
-     * @return array The name of the environments.
-     */
-    protected function getEnvironments(): array
-    {
-        return ['dev', 'test'];
     }
 }
