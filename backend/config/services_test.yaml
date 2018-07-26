@@ -1,6 +1,16 @@
 services:
     _defaults:
+        autowire: true
+        autoconfigure: true
         public: true
+
+    _instanceof:
+        App\DataFixtures\BookieTestFixtureInterface:
+            tags: ['doctrine.fixture.orm']
+
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
 
     # If you need to access services in a test, create an alias
     # and then fetch that alias from the container. As a convention,
