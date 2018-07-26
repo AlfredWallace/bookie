@@ -2,7 +2,7 @@ services:
     _defaults:
         autowire: true
         autoconfigure: true
-        public: true
+        public: false
 
     _instanceof:
         App\DataFixtures\BookieTestFixtureInterface:
@@ -11,15 +11,3 @@ services:
     App\:
         resource: '../src/*'
         exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
-
-    # If you need to access services in a test, create an alias
-    # and then fetch that alias from the container. As a convention,
-    # aliases are prefixed with test. For example:
-    #
-    # test.App\Service\MyService: '@App\Service\MyService'
-    test.app.basic_points_calculator:
-        class: App\Service\BasicPointsCalculator
-        public: true
-    test.app.alternative_points_calculator:
-        class: App\Service\AlternativePointsCalculator
-        public: true

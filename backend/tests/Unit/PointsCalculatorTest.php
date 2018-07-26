@@ -21,8 +21,8 @@ class PointsCalculatorTest extends KernelTestCase
     public static function setUpBeforeClass()
     {
         self::bootKernel();
-        self::$basicCalculator = self::$container->get('test.app.basic_points_calculator');
-        self::$alternativeCalculator = self::$container->get('test.app.alternative_points_calculator');
+        self::$basicCalculator = self::$container->get('App\Service\BasicPointsCalculator');
+        self::$alternativeCalculator = self::$container->get('App\Service\AlternativePointsCalculator');
     }
 
     public static function betPointsData()
