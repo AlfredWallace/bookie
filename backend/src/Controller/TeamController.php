@@ -3,11 +3,9 @@
 namespace App\Controller;
 
 use App\Repository\TeamRepository;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\Routing\Annotation\Route;
 
-class TeamController extends FOSRestController
+class TeamController extends ApiController
 {
     /**
      * @var TeamRepository
@@ -20,9 +18,7 @@ class TeamController extends FOSRestController
     }
 
     /**
-     * @Rest\Route("/teams", name="bookie_teams")
-     * @Method({"GET"})
-     * @Rest\View(statusCode=200, serializerGroups={"Default"})
+     * @Route("/teams", name="bookie_teams", methods={"GET"})
      *
      * @return mixed
      * @throws \Doctrine\ORM\Query\QueryException

@@ -4,10 +4,11 @@ namespace App\DataFixtures;
 
 use App\Factory\UserFactory;
 use App\Providers\Tests\UserProvider;
+use Doctrine\Bundle\FixturesBundle\ORMFixtureInterface;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class UserFixtures extends AbstractFixture implements BookieTestFixtureInterface
+class UserFixtures extends AbstractFixture implements BookieTestFixtureInterface, ORMFixtureInterface
 {
     private $userFactory;
 

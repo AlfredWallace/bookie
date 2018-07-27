@@ -8,14 +8,12 @@ use App\Exception\ScoreFormatException;
 use App\Repository\MatchRepository;
 use App\Service\AlternativePointsCalculator;
 use App\Service\BasicPointsCalculator;
-use FOS\RestBundle\Controller\Annotations as Rest;
-use FOS\RestBundle\Controller\FOSRestController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class MatchController extends FOSRestController
+class MatchController extends ApiController
 {
     const MATCH_NOT_FOUND_MESSAGE = 'Match not found.';
 
@@ -38,9 +36,7 @@ class MatchController extends FOSRestController
     }
 
     /**
-     * @Rest\Route("/matches", name="bookie_matches")
-     * @Method({"GET"})
-     * @Rest\View(statusCode=200, serializerGroups={"Default"})
+     * @Route("/matches", name="bookie_matches", methods={"GET"})
      *
      * @throws \Doctrine\ORM\Query\QueryException
      */
@@ -50,9 +46,7 @@ class MatchController extends FOSRestController
     }
 
     /**
-     * @Rest\Route("/matches/{id}/end", name="bookie_matches_end")
-     * @Method({"POST"})
-     * @Rest\View(statusCode=200, serializerGroups={"Default"})
+     * @Route("/matches/{id}/end", name="bookie_matches_end", methods={"POST"})
      * @Security("is_granted('ROLE_ADMIN')")
      *
      * @param Match $match
