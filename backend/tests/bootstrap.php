@@ -7,7 +7,11 @@ passthru(sprintf(
     __DIR__
 ));
 passthru(sprintf(
-    $exec . 'doctrine:schema:drop  --force' . $envMode,
+    $exec . 'doctrine:database:drop  --force --if-exists' . $envMode,
+    __DIR__
+));
+passthru(sprintf(
+    $exec . 'doctrine:database:create  --if-not-exists' . $envMode,
     __DIR__
 ));
 passthru(sprintf(
