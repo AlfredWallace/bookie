@@ -22,7 +22,7 @@ class PlayerRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->indexBy('p', 'p.id')
             ->orderBy('p.points', 'desc')
-            ->orderBy('p.username', 'asc')
+            ->addOrderBy('p.username', 'asc')
             ->getQuery()->getResult();
     }
 }

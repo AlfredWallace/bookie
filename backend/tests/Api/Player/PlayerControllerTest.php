@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Tests\Api;
+namespace App\Tests\Api\Player;
 
+use App\Tests\Api\ApiTestCase;
 use App\Tests\DataProviders\PlayerProvider;
 use Symfony\Component\HttpFoundation\Response;
 
 class PlayerControllerTest extends ApiTestCase
 {
     /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayer()
+     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
@@ -75,7 +76,7 @@ class PlayerControllerTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayer()
+     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
@@ -85,17 +86,17 @@ class PlayerControllerTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayer()
+     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
     public function testGetOtherPlayer($player)
     {
-        $this->fetchPlayer($this->getToken(PlayerProvider::otherPlayer()['other']['player']), $player);
+        $this->fetchPlayer($this->getToken(PlayerProvider::otherPlayer()), $player);
     }
 
     /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::otherPlayer()
+     * @dataProvider \App\Tests\DataProviders\PlayerProvider::otherPlayerDataProvider()
      * @param $player
      */
     public function testGetUnexistentPlayer($player)
@@ -153,7 +154,7 @@ class PlayerControllerTest extends ApiTestCase
      */
     public function testDeletePlayerByAdmin($player)
     {
-        $token = $this->getToken(PlayerProvider::mainPlayer()['main']['player']);
+        $token = $this->getToken(PlayerProvider::mainPlayer());
 
         $this->delete('/players/' . $player['id'], $token);
         $response = self::$staticClient->getResponse();
@@ -161,7 +162,7 @@ class PlayerControllerTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayer()
+     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
      * @param $player
      */
     public function testDeleteUnexistentPlayer($player)
@@ -172,13 +173,13 @@ class PlayerControllerTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayer()
+     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
     public function testDeleteOtherPlayer($player)
     {
-        $token = $this->getToken(PlayerProvider::otherPlayer()['other']['player']);
+        $token = $this->getToken(PlayerProvider::otherPlayer());
 
         $this->delete('/players/' . $player['id'], $token);
         $response = self::$staticClient->getResponse();
@@ -210,7 +211,7 @@ class PlayerControllerTest extends ApiTestCase
      */
     public function testUpdatePlayerByAdmin($oldPlayer, $newPlayer)
     {
-        $token = $this->getToken(PlayerProvider::mainPlayer()['main']['player']);
+        $token = $this->getToken(PlayerProvider::mainPlayer());
 
         $this->put('/players/' . $oldPlayer['id'], $token, [
             'username' => $newPlayer['username'] ?? null,
@@ -222,13 +223,13 @@ class PlayerControllerTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayer()
+     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
     public function testUpdateOtherPlayer($player)
     {
-        $requester = PlayerProvider::otherPlayer()['other']['player'];
+        $requester = PlayerProvider::otherPlayer();
         $token = $this->getToken($requester);
 
         $this->put('/players/' . $player['id'], $token, [
@@ -240,7 +241,7 @@ class PlayerControllerTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayer()
+     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
      * @param $player
      */
     public function testUpdateUnexistentPlayer($player)
@@ -256,7 +257,7 @@ class PlayerControllerTest extends ApiTestCase
      */
     public function testUpdatePlayerWithInvalidData($invalidData)
     {
-        $player = PlayerProvider::otherPlayer()['other']['player'];
+        $player = PlayerProvider::otherPlayer();
         $token = $this->getToken($player);
 
         $this->put('/players/' . $player['id'], $token, $invalidData);

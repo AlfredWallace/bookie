@@ -1,6 +1,8 @@
 {
     "type": "project",
     "license": "proprietary",
+    "name": "Alfred Wallace Bookie",
+    "description": "Betting on sports among friends",
     "require": {
         "php": "^7.1.3",
         "doctrine/doctrine-fixtures-bundle": "^3.0",

@@ -21,6 +21,7 @@ class TeamRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('t')
             ->indexBy('t', 't.id')
+            ->orderBy('t.name', 'asc')
             ->getQuery()->getResult();
     }
 }

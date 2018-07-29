@@ -2,29 +2,44 @@
 
 namespace App\Controller;
 
+use App\Entity\Team;
 use App\Repository\TeamRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TeamController extends ApiController
 {
-    /**
-     * @var TeamRepository
-     */
-    private $teamRepository;
+    public const DEFAULT_SERIALIZATION_GROUPS = ['team.default'];
 
-    public function __construct(TeamRepository $teamRepository)
+    /**
+     * @Route(
+     *     "/teams/{id}",
+     *     name="bookie_teams_show",
+     *     methods={"GET"},
+     *     requirements={"id"="\d+"}
+     * )
+     *
+     * @param Team $team
+     * @return JsonResponse
+     */
+    public function show(Team $team): JsonResponse
     {
-        $this->teamRepository = $teamRepository;
+        return $this->getSerializedResponse($team, self::DEFAULT_SERIALIZATION_GROUPS);
     }
 
     /**
-     * @Route("/teams", name="bookie_teams", methods={"GET"})
+     * @Route(
+     *     "/teams",
+     *     name="bookie_teams",
+     *     methods={"GET"}
+     * )
      *
-     * @return mixed
+     * @param TeamRepository $teamRepository
+     * @return JsonResponse
      * @throws \Doctrine\ORM\Query\QueryException
      */
-    public function listTeams()
+    public function list(TeamRepository $teamRepository): JsonResponse
     {
-        return $this->teamRepository->findAllIndexedById();
+        return $this->getSerializedResponse($teamRepository->findAllIndexedById(), ['team.default']);
     }
 }

@@ -4,7 +4,7 @@ namespace App\Tests\DataProviders;
 
 class PlayerProvider
 {
-    public static function fixturePlayers()
+    public static function fixturePlayers(): array
     {
         return array_map(function ($players) {
             if (array_key_exists('player', $players)) {
@@ -15,7 +15,7 @@ class PlayerProvider
                 return null;
             }
         }, array_merge(
-            self::otherPlayer(),
+            self::otherPlayerDataProvider(),
             self::additionalPlayers(),
             self::playersToModify(),
             self::playersToSelfModify(),
@@ -24,33 +24,43 @@ class PlayerProvider
         ));
     }
 
-    public static function mainPlayer()
+    public static function mainPlayer(): array
     {
         return [
-            'main' => [
-                'player' => [
-                    'username' => 'wallace',
-                    'password' => 'wallace',
-                    'id' => 1,
-                ],
+            'username' => 'wallace',
+            'password' => 'wallace',
+            'id' => 1,
+        ];
+    }
+
+    public static function mainPlayerDataProvider(): array
+    {
+        return [
+            [
+                'player' => self::mainPlayer(),
             ],
         ];
     }
 
-    public static function otherPlayer()
+    public static function otherPlayer(): array
     {
         return [
-            'other' => [
-                'player' => [
-                    'username' => 'Other player',
-                    'password' => '0th3rP4ssw0rd',
-                    'id' => 2,
-                ],
+            'username' => 'Other player',
+            'password' => '0th3rP4ssw0rd',
+            'id' => 2,
+        ];
+    }
+
+    public static function otherPlayerDataProvider(): array
+    {
+        return [
+            [
+                'player' => self::otherPlayer(),
             ],
         ];
     }
 
-    public static function additionalPlayers()
+    public static function additionalPlayers(): array
     {
         return [
             [
@@ -77,7 +87,7 @@ class PlayerProvider
         ];
     }
 
-    public static function playersToModify()
+    public static function playersToModify(): array
     {
         return [
             [
@@ -119,7 +129,7 @@ class PlayerProvider
         ];
     }
 
-    public static function playersToSelfModify()
+    public static function playersToSelfModify(): array
     {
         return [
             [
@@ -161,7 +171,7 @@ class PlayerProvider
         ];
     }
 
-    public static function playersToDelete()
+    public static function playersToDelete(): array
     {
         return [
             [
@@ -188,7 +198,7 @@ class PlayerProvider
         ];
     }
 
-    public static function playersToSelfDelete()
+    public static function playersToSelfDelete(): array
     {
         return [
             [
@@ -215,7 +225,7 @@ class PlayerProvider
         ];
     }
 
-    public static function playersToCreate()
+    public static function playersToCreate(): array
     {
         return [
             [
@@ -242,7 +252,7 @@ class PlayerProvider
         ];
     }
 
-    public static function invalidPlayers()
+    public static function invalidPlayers(): array
     {
         return [
             [
