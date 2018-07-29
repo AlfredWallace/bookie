@@ -3,11 +3,10 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class Team
- * @package App\Entity
  * @ORM\Entity()
  * @ORM\Table(name="bookie_team")
  */
@@ -18,31 +17,45 @@ class Team
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      *
-     * @var int
+     * @Groups({"team.default"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Assert\NotBlank(groups={"create", "update"})
-     * @Assert\Regex(
-     *     pattern="/^[A-Za-z. -]{3,255}$/",
-     *     groups={"create", "update"}
-     * )
      *
-     * @var string
+     * @Groups({"team.default"})
+     *
+     * @Assert\NotBlank(message="Le nom de l'équipe ne peut pas être vide")
+     * @Assert\Length(
+     *     min="3",
+     *     minMessage="Le nom de l'équipe doit faire au moins 3 caractères",
+     *     max="255",
+     *     maxMessage="Le nom de l'équipe doit faire au plus 255 caractères"
+     * )
+     * @Assert\Regex(
+     *     pattern="/^[\p{L} &.-]+$/",
+     *     message="Le nom de l'équipe peut contenir des lettres, des espaces, ou les 3 caractères spéciaux suivants : &.-"
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=6, unique=true)
-     * @Assert\NotBlank(groups={"create", "update"})
-     * @Assert\Regex(
-     *     pattern="/^[A-Z]{2,6}$/",
-     *     groups={"create", "update"}
-     * )
      *
-     * @var string
+     * @Groups({"team.default"})
+     *
+     * @Assert\NotBlank(message="L'abbréviation de l'équipe ne peut pas être vide")
+     * @Assert\Length(
+     *     min="2",
+     *     minMessage="L'abbréviation de l'équipe doit faire au moins 2 caractères",
+     *     max="6",
+     *     maxMessage="L'abbréviation de l'équipe doit faire au plus 6 caractères"
+     * )
+     * @Assert\Regex(
+     *     pattern="/^[A-Z]+$/",
+     *     message="L'abbréviation de l'équipe ne peut contenir que des lettres majuscules non-accentuées"
+     * )
      */
     private $abbreviation;
 
@@ -52,44 +65,27 @@ class Team
         $this->abbreviation = $abbreviation;
     }
 
-    /**
-     * @return mixed
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return mixed
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param mixed $name
-     * @return Team
-     */
     public function setName(string $name): self
     {
         $this->name = $name;
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getAbbreviation(): ?string
     {
         return $this->abbreviation;
     }
 
-    /**
-     * @param mixed $abbreviation
-     * @return Team
-     */
     public function setAbbreviation(string $abbreviation): self
     {
         $this->abbreviation = $abbreviation;

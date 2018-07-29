@@ -10,8 +10,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Table(name="bookie_player")
  * @ORM\Entity()
+ * @ORM\Table(name="bookie_player")
  */
 class Player implements UserInterface
 {
@@ -32,17 +32,17 @@ class Player implements UserInterface
      * @Assert\NotBlank(message="Le login ne peut pas être vide")
      * @Assert\Length(
      *     min="3",
-     *     minMessage="Le login doit faire au moins 3 caractères.",
+     *     minMessage="Le login doit faire au moins 3 caractères",
      *     max="16",
-     *     maxMessage="Le login doit faire au plus 16 caractères."
+     *     maxMessage="Le login doit faire au plus 16 caractères"
      * )
      * @Assert\Regex(
      *     pattern="/^[A-Za-z0-9_. -]+$/",
-     *     message="Le login peut contenir des lettres, des chiffres, des espaces, ou les 3 caractères spéciaux suivants : _.-"
+     *     message="Le login peut contenir des lettres non-accentuées, des chiffres, des espaces, ou les 3 caractères spéciaux suivants : _.-"
      * )
      * @Assert\Regex(
      *     pattern="/^[A-Za-z].+/",
-     *     message="Le login doit commencer par une lettre"
+     *     message="Le login doit commencer par une lettre non-accentuée"
      * )
      */
     private $username;
@@ -55,13 +55,13 @@ class Player implements UserInterface
      * @Assert\NotBlank(message="Le mot de passe ne peut pas être vide")
      * @Assert\Length(
      *     min="4",
-     *     minMessage="Le mot de passe doit faire au moins 4 caractères.",
+     *     minMessage="Le mot de passe doit faire au moins 4 caractères",
      *     max="64",
-     *     maxMessage="Le mot de passe doit faire au plus 64 caractères."
+     *     maxMessage="Le mot de passe doit faire au plus 64 caractères"
      * )
      * @Assert\Regex(
      *     pattern="/^[A-Za-z0-9!@#$%&_.-]+$/",
-     *     message="Le mot de passe peut contenir des lettres, des chiffres, ou les caractères spéciaux suivants : !@#$%&_.-"
+     *     message="Le mot de passe peut contenir des lettres non-accnetuées, des chiffres, ou les caractères spéciaux suivants : !@#$%&_.-"
      * )
      */
     private $password;
