@@ -7,28 +7,25 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PlayerControllerTest extends ApiTestCase
 {
-    const UNEXISTENT_ID = 0;
-
-    private function getToken($player)
-    {
-        $this->post('/login_check', null, [
-            'username' => $player['username'] ?? null,
-            'password' => $player['password'] ?? null,
-        ]);
-        $response = self::$staticClient->getResponse();
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        $body = $this->getBody($response);
-        $this->assertArrayHasKey('token', $body);
-        return $body['token'];
-    }
-
     /**
+     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayer()
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
-    public function testFetchTokenOnly($player)
+    public function testToken($player)
     {
-        $this->getToken($player);
+        $response = $this->getTokenResponse($player);
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+
+        $body = $this->getBody($response);
+        $this->assertArrayHasKey('token', $body);
+
+        $splitToken = explode('.', $body['token']);
+        $this->assertCount(3, $splitToken);
+
+        array_shift($splitToken);
+        $payload = json_decode(base64_decode(array_shift($splitToken), true), true);
+        $this->assertArrayHasKey('playerId', $payload);
     }
 
     /**

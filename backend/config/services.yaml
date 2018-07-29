@@ -14,8 +14,3 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
-
-    App\Listener\Jwt\PayloadCustomizer:
-        arguments: [ '@security.token_storage' ]
-        tags:
-            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }

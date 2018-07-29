@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class ApiTestCase extends WebTestCase
 {
+    const UNEXISTENT_ID = 0;
+
     /** @var Client */
     protected static $staticClient;
 
@@ -53,6 +55,22 @@ abstract class ApiTestCase extends WebTestCase
         }
 
         return self::$staticClient->request($method, $uri, $parameters, [], $server, $encodedContent);
+    }
+
+    protected function getTokenResponse($player): Response
+    {
+        $this->post('/login_check', null, [
+            'username' => $player['username'] ?? null,
+            'password' => $player['password'] ?? null,
+        ]);
+        return self::$staticClient->getResponse();
+    }
+
+    protected function getToken($player)
+    {
+        $response = $this->getTokenResponse($player);
+        $body = $this->getBody($response);
+        return $body['token'];
     }
 
     protected function getBody(Response $response)
