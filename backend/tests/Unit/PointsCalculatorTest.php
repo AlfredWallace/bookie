@@ -3,7 +3,6 @@
 namespace App\Tests\Unit;
 
 use App\Entity\Bet;
-use App\Entity\Match;
 use App\Entity\Team;
 use App\Factory\MatchFactory;
 use App\Service\AlternativePointsCalculator;

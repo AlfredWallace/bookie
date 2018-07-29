@@ -2,7 +2,7 @@
 
 namespace App\Listener\Jwt;
 
-use App\Entity\User;
+use App\Entity\Player;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -28,7 +28,7 @@ class PayloadCustomizer
      */
     public function onJWTCreated(JWTCreatedEvent $event)
     {
-        /** @var User $user */
+        /** @var Player $user */
         $user = $this->tokenStorage->getToken()->getUser();
         $payload = $event->getData();
 

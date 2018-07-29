@@ -1,19 +1,19 @@
 security:
     providers:
-        bookie_users:
+        bookie_players:
             entity:
-                class: App\Entity\User
+                class: App\Entity\Player
                 property: username
     encoders:
-        App\Entity\User: bcrypt
+        App\Entity\Player: bcrypt
     role_hierarchy:
         ROLE_ADMIN: ROLE_USER
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        user_generation:
-            pattern: ^/users/new
+        player_generation:
+            pattern: ^/players/new
             security: false
         login:
             pattern: ^/login
@@ -31,5 +31,5 @@ security:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/login,  roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/,       roles: IS_AUTHENTICATED_FULLY }

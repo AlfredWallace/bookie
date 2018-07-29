@@ -10,24 +10,24 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Table(name="bookie_user")
+ * @ORM\Table(name="bookie_player")
  * @ORM\Entity()
  */
-class User implements UserInterface
+class Player implements UserInterface
 {
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
      *
-     * @Groups({"user.default"})
+     * @Groups({"player.default"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=16, unique=true)
      *
-     * @Groups({"user.default"})
+     * @Groups({"player.default"})
      *
      * @Assert\NotBlank(message="Le login ne peut pas être vide")
      * @Assert\Length(
@@ -69,7 +69,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="json")
      *
-     * @Groups({"user.default"})
+     * @Groups({"player.default"})
      */
     private $roles = [];
 
@@ -83,7 +83,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="smallint", nullable=true)
      *
-     * @Groups({"user.default"})
+     * @Groups({"player.default"})
      *
      * @Assert\Type(type="integer")
      */
@@ -94,29 +94,20 @@ class User implements UserInterface
         $this->bets = new ArrayCollection();
     }
 
-    public function getPassword(): ?string
+    public function getId(): ?int
     {
-        return $this->password;
+        return $this->id;
     }
 
-    public function getSalt(): void
+    public function setId(int $id): self
     {
-        return;
+        $this->id = $id;
+        return $this;
     }
 
     public function getUsername(): ?string
     {
         return $this->username;
-    }
-
-    public function eraseCredentials(): void
-    {
-        return;
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function setUsername(?string $username): self
@@ -125,24 +116,30 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
     public function setPassword(?string $password): self
     {
         $this->password = $password;
         return $this;
     }
 
+    public function getSalt(): void
+    {
+        return;
+    }
+
+    public function eraseCredentials(): void
+    {
+        return;
+    }
+
     public function getRoles(): ?array
     {
         return $this->roles;
-    }
-
-    public function setRoles(array $roles): self
-    {
-        $this->roles = [];
-        foreach ($roles as $role) {
-            $this->addRole($role);
-        }
-        return $this;
     }
 
     public function addRole(string $role): self
@@ -158,6 +155,15 @@ class User implements UserInterface
         return $this;
     }
 
+    public function setRoles(array $roles): self
+    {
+        $this->roles = [];
+        foreach ($roles as $role) {
+            $this->addRole($role);
+        }
+        return $this;
+    }
+
     public function getBets(): ?Collection
     {
         return $this->bets;
@@ -167,7 +173,7 @@ class User implements UserInterface
     {
         if (!$this->bets->contains($bet)) {
             $this->bets->add($bet);
-            $bet->setUser($this);
+            $bet->setPlayer($this);
         }
         return $this;
     }

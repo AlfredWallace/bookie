@@ -21,11 +21,11 @@ abstract class ApiController extends Controller
         $this->validator = $validator;
     }
 
-    protected function getSerializedResponse($data, array $groups = []): JsonResponse
+    protected function getSerializedResponse($data, array $groups = [], $code = Response::HTTP_OK): JsonResponse
     {
         $serializedData = $this->serializer->serialize($data, 'json', ['groups' => $groups]);
 
-        return new JsonResponse($serializedData, Response::HTTP_OK, [], true);
+        return new JsonResponse($serializedData, $code, [], true);
     }
 
     protected function getValidatedObject($json, $class)
@@ -39,7 +39,7 @@ abstract class ApiController extends Controller
             foreach ($violationList as $violation) {
                 $violationString .= sprintf(" [Champ '%s' : %s]", $violation->getPropertyPath(), $violation->getMessage());;
             }
-            throw new ValidatorException($violationString);
+            throw new ValidatorException($violationString, Response::HTTP_BAD_REQUEST);
         }
 
         return $object;

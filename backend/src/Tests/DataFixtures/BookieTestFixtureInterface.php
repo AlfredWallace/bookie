@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\Tests\DataFixtures;
 
 interface BookieTestFixtureInterface
 {

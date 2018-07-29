@@ -3,15 +3,15 @@
 namespace App\Service;
 
 use App\Entity\Bet;
-use App\Entity\User;
+use App\Entity\Player;
 
 abstract class PointsCalculator
 {
-    public function getUserPoints(User $user): int
+    public function getUserPoints(Player $player): int
     {
         $points = 0;
         /** @var Bet $bet */
-        foreach ($user->getBets() as $bet) {
+        foreach ($player->getBets() as $bet) {
             $points += $this->getBetPoints($bet);
         }
 

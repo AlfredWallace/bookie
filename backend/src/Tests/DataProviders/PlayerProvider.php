@@ -1,346 +1,248 @@
 <?php
 
-namespace App\Providers\Tests;
+namespace App\Tests\DataProviders;
 
-class UserProvider
+class PlayerProvider
 {
-    public static function fixtureUsers()
+    public static function fixturePlayers()
     {
-        return array_map(function ($users) {
-            if (array_key_exists('user', $users)) {
-                return $users['user'];
-            } elseif (array_key_exists('old', $users)) {
-                return $users['old'];
+        return array_map(function ($players) {
+            if (array_key_exists('player', $players)) {
+                return $players['player'];
+            } elseif (array_key_exists('old', $players)) {
+                return $players['old'];
             } else {
                 return null;
             }
         }, array_merge(
-            self::otherUser(),
-            self::additionalUsers(),
-            self::usersToModify(),
-            self::usersToModifyByUsername(),
-            self::usersToSelfModify(),
-            self::usersToSelfModifyByUsername(),
-            self::usersToDelete(),
-            self::usersToDeleteByUsername(),
-            self::usersToSelfDelete(),
-            self::usersToSelfDeleteByUsername()
+            self::otherPlayer(),
+            self::additionalPlayers(),
+            self::playersToModify(),
+            self::playersToSelfModify(),
+            self::playersToDelete(),
+            self::playersToSelfDelete()
         ));
     }
 
-    public static function mainUser()
+    public static function mainPlayer()
     {
         return [
             'main' => [
-                'user' => [
+                'player' => [
                     'username' => 'wallace',
                     'password' => 'wallace',
+                    'id' => 1,
                 ],
             ],
         ];
     }
 
-    public static function otherUser()
+    public static function otherPlayer()
     {
         return [
             'other' => [
-                'user' => [
-                    'username' => 'Other User',
+                'player' => [
+                    'username' => 'Other player',
                     'password' => '0th3rP4ssw0rd',
+                    'id' => 2,
                 ],
             ],
         ];
     }
 
-    public static function additionalUsers()
+    public static function additionalPlayers()
     {
         return [
             [
-                'user' => [
+                'player' => [
                     'username' => 'plop',
                     'password' => 'plop',
+                    'id' => 3,
                 ],
             ],
             [
-                'user' => [
+                'player' => [
                     'username' => 'Talkie Walkie',
                     'password' => 'n0ns3ns3!',
+                    'id' => 4,
                 ],
             ],
             [
-                'user' => [
+                'player' => [
                     'username' => 'john_doe',
                     'password' => 'qwerty123',
+                    'id' => 5,
                 ],
             ],
         ];
     }
 
-    public static function usersToModify()
+    public static function playersToModify()
     {
         return [
             [
                 'old' => [
                     'username' => 'alice',
                     'password' => 'w0nd3rl4nd',
+                    'id' => 6,
                 ],
                 'new' => [
                     'username' => 'alice2leretour',
                     'password' => 'w0nd3rl4nd',
+                    'id' => 6,
                 ],
             ],
             [
                 'old' => [
                     'username' => 'bob',
                     'password' => 'p4l1ndr0m3',
+                    'id' => 7,
                 ],
                 'new' => [
                     'username' => 'bob3lavengeance',
                     'password' => '3m0rdn1l4p',
+                    'id' => 7,
                 ],
             ],
             [
                 'old' => [
                     'username' => 'charlie_yksi',
                     'password' => 'l3nt0k0n3',
+                    'id' => 8,
                 ],
                 'new' => [
                     'username' => 'charlie_kaksi',
                     'password' => 'l3nt0k0n3',
+                    'id' => 8,
                 ],
             ],
         ];
     }
 
-    public static function usersToModifyByUsername()
-    {
-        return [
-            [
-                'old' => [
-                    'username' => 'denise',
-                    'password' => 'w0nd3rl4nd',
-                ],
-                'new' => [
-                    'username' => 'deuxnise',
-                    'password' => 'w0nd3rl4nd',
-                ],
-            ],
-            [
-                'old' => [
-                    'username' => 'elvis',
-                    'password' => 'p4l1ndr0m3',
-                ],
-                'new' => [
-                    'username' => 'elviis',
-                    'password' => '3m0rdn1l4p',
-                ],
-            ],
-            [
-                'old' => [
-                    'username' => 'franck',
-                    'password' => 'l3nt0k0n3',
-                ],
-                'new' => [
-                    'username' => 'kcnarf',
-                    'password' => 'l3nt0k0n3',
-                ],
-            ],
-        ];
-    }
-
-    public static function usersToSelfModify()
+    public static function playersToSelfModify()
     {
         return [
             [
                 'old' => [
                     'username' => 'gaelle',
                     'password' => 'w0nd3rl4nd',
+                    'id' => 9,
                 ],
                 'new' => [
                     'username' => 'guenael',
                     'password' => 'w0nd3rl4nd',
+                    'id' => 9,
                 ],
             ],
             [
                 'old' => [
                     'username' => 'hector',
                     'password' => 'p4l1ndr0m3',
+                    'id' => 10,
                 ],
                 'new' => [
                     'username' => 'hec thor',
                     'password' => '3m0rdn1l4p',
+                    'id' => 10,
                 ],
             ],
             [
                 'old' => [
                     'username' => 'ignace',
                     'password' => 'l3nt0k0n3',
+                    'id' => 11,
                 ],
                 'new' => [
                     'username' => 'iguane',
                     'password' => 'l3nt0k0n3',
+                    'id' => 11,
                 ],
             ],
         ];
     }
 
-    public static function usersToSelfModifyByUsername()
+    public static function playersToDelete()
     {
         return [
             [
-                'old' => [
-                    'username' => 'jean',
-                    'password' => 'w0nd3rl4nd',
-                ],
-                'new' => [
-                    'username' => 'jehan',
-                    'password' => 'w0nd3rl4nd',
-                ],
-            ],
-            [
-                'old' => [
-                    'username' => 'kathleen',
-                    'password' => 'p4l1ndr0m3',
-                ],
-                'new' => [
-                    'username' => 'quatre_lignes',
-                    'password' => '3m0rdn1l4p',
-                ],
-            ],
-            [
-                'old' => [
-                    'username' => 'laurent',
-                    'password' => 'l3nt0k0n3',
-                ],
-                'new' => [
-                    'username' => 'leaurentre',
-                    'password' => 'l3nt0k0n3',
-                ],
-            ],
-        ];
-    }
-
-    public static function usersToDelete()
-    {
-        return [
-            [
-                'user' => [
-                    'username' => 'useless-user',
+                'player' => [
+                    'username' => 'useless-player',
                     'password' => 'whyB0th3r',
+                    'id' => 12,
                 ],
             ],
             [
-                'user' => [
+                'player' => [
                     'username' => 'not-so-useful',
                     'password' => 'mw4h4h4h4',
+                    'id' => 13,
                 ],
             ],
             [
-                'user' => [
+                'player' => [
                     'username' => 'void',
                     'password' => 'v0idv0id',
+                    'id' => 14,
                 ],
             ],
         ];
     }
 
-    public static function usersToDeleteByUsername()
+    public static function playersToSelfDelete()
     {
         return [
             [
-                'user' => [
-                    'username' => 'still-useless',
-                    'password' => 'whyB0th3r',
-                ],
-            ],
-            [
-                'user' => [
-                    'username' => 'still-not-useful',
-                    'password' => 'mw4h4h4h4',
-                ],
-            ],
-            [
-                'user' => [
-                    'username' => 'void of the void',
-                    'password' => 'v0idv0id',
-                ],
-            ],
-        ];
-    }
-
-    public static function usersToSelfDelete()
-    {
-        return [
-            [
-                'user' => [
+                'player' => [
                     'username' => 'self_destruct',
                     'password' => 'boum',
+                    'id' => 15,
                 ],
             ],
             [
-                'user' => [
+                'player' => [
                     'username' => 'dis-integer',
                     'password' => 'zap',
+                    'id' => 16,
                 ],
             ],
             [
-                'user' => [
+                'player' => [
                     'username' => 'Sue Side',
                     'password' => 'und3rth3cot3',
+                    'id' => 17,
                 ],
             ],
         ];
     }
 
-    public static function usersToSelfDeleteByUsername()
+    public static function playersToCreate()
     {
         return [
             [
-                'user' => [
-                    'username' => 'Thanos',
-                    'password' => 'boum',
-                ],
-            ],
-            [
-                'user' => [
-                    'username' => 'Hades',
-                    'password' => 'zap',
-                ],
-            ],
-            [
-                'user' => [
-                    'username' => 'Wotan',
-                    'password' => 'und3rth3cot3',
-                ],
-            ],
-        ];
-    }
-
-    public static function usersToCreate()
-    {
-        return [
-            [
-                'user' => [
+                'player' => [
                     'username' => 'Ray Cent',
                     'password' => 'th1sP4ss1sR3c3nt',
+                    'id' => 18,
                 ],
             ],
             [
-                'user' => [
+                'player' => [
                     'username' => 'More Ressent',
                     'password' => 'fr3shP4ss',
+                    'id' => 19,
                 ],
             ],
             [
-                'user' => [
+                'player' => [
                     'username' => 'Evan Morescent',
                     'password' => '1dontkn0wwh4ttos4y',
+                    'id' => 20,
                 ],
             ],
         ];
     }
 
-    public static function invalidUsers()
+    public static function invalidPlayers()
     {
         return [
             [

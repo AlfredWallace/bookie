@@ -71,7 +71,7 @@ class BetController extends ApiController
 
         $user = $manager->getRepository('App:User')->find($betArray['user']);
         if (is_null($user)) {
-            throw new EntityNotFoundException(UserController::USER_NOT_FOUND_MESSAGE);
+            throw new EntityNotFoundException(PlayerController::USER_NOT_FOUND_MESSAGE);
         }
 
         $bet = $manager->getRepository('App:Bet')->findOneBy([

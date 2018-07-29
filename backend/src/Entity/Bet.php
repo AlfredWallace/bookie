@@ -11,7 +11,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @package App\Entity\Bet
  * @ORM\Entity()
  * @ORM\Table(name="bookie_bet", uniqueConstraints={
- *     @UniqueConstraint(name="user_match_idx", columns={"user_id", "match_id"})
+ *     @UniqueConstraint(name="player_match_idx", columns={"player_id", "match_id"})
  * })
  */
 class Bet
@@ -26,16 +26,16 @@ class Bet
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="bets")
+     * @ORM\ManyToOne(targetEntity="Player", inversedBy="bets")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"bet.user"})
+     * @Groups({"bet.player"})
      *
-     * @var User
+     * @var Player
      */
-    protected $user;
+    protected $player;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Match", inversedBy="bets")
+     * @ORM\ManyToOne(targetEntity="Match", inversedBy="bets")
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"bet.match"})
      *
@@ -80,30 +80,20 @@ class Bet
     }
 
     /**
-     * @Serializer\VirtualProperty()
-     *
-     * @return int|null
-     */
-    public function getUserId(): ?int
-    {
-        return isset($this->user) ? $this->user->getId() : null;
-    }
-
-    /**
      * @return mixed
      */
-    public function getUser(): ?User
+    public function getPlayer(): ?Player
     {
-        return $this->user;
+        return $this->player;
     }
 
     /**
-     * @param mixed $user
+     * @param mixed $player
      * @return Bet
      */
-    public function setUser(?User $user): self
+    public function setPlayer(?Player $player): self
     {
-        $this->user = $user;
+        $this->player = $player;
         return $this;
     }
 

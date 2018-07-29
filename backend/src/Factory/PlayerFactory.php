@@ -2,14 +2,11 @@
 
 namespace App\Factory;
 
-use App\Entity\User;
+use App\Entity\Player;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
-class UserFactory
+class PlayerFactory
 {
-    /**
-     * @var UserPasswordEncoderInterface
-     */
     private $encoder;
 
     public function __construct(UserPasswordEncoderInterface $encoder)
@@ -17,14 +14,18 @@ class UserFactory
         $this->encoder = $encoder;
     }
 
-    public function create($username, $password, $roles = ['ROLE_USER'])
+    public function create(string $username, string $password, array $roles = [], int $id = null): Player
     {
-        $user = new User();
+        $user = new Player();
         $user
             ->setUsername($username)
             ->setPassword($this->encoder->encodePassword($user, $password))
-            ->setRoles($roles)
-        ;
+            ->setRoles($roles === [] ? ['ROLE_USER'] : $roles);
+
+        if ($id !== null) {
+            $user->setId($id);
+        }
+
         return $user;
     }
 }
