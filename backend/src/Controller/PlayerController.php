@@ -19,7 +19,7 @@ class PlayerController extends ApiController
     /**
      * @Route(
      *     "/players/new",
-     *     name="bookie_players_create",
+     *     name="bookie_players_new",
      *     methods={"POST"}
      * )
      *

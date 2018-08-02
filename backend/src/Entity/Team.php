@@ -22,7 +22,7 @@ class Team
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=64, unique=true)
      *
      * @Groups({"team.default"})
      *
@@ -30,8 +30,8 @@ class Team
      * @Assert\Length(
      *     min="3",
      *     minMessage="Le nom de l'équipe doit faire au moins 3 caractères",
-     *     max="255",
-     *     maxMessage="Le nom de l'équipe doit faire au plus 255 caractères"
+     *     max="64",
+     *     maxMessage="Le nom de l'équipe doit faire au plus 64 caractères"
      * )
      * @Assert\Regex(
      *     pattern="/^[\p{L} &.-]+$/",

@@ -20,7 +20,6 @@ class TeamControllerTest extends ApiTestCase
         }
     }
 
-
     /**
      * @dataProvider \App\Tests\DataProviders\TeamProvider::basicTeams()
      * @param $team
@@ -28,6 +27,21 @@ class TeamControllerTest extends ApiTestCase
     public function testGetTeamByAdmin($team)
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
+
+        $id = $team['id'];
+        $this->get('/teams/' . $id, $token);
+        $response = self::$staticClient->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->teamResponseAssertions($team, $this->getBody($response), $id);
+    }
+
+    /**
+     * @dataProvider \App\Tests\DataProviders\TeamProvider::basicTeams()
+     * @param $team
+     */
+    public function testGetTeamByNonAdmin($team)
+    {
+        $token = $this->getToken(PlayerProvider::otherPlayer());
 
         $id = $team['id'];
         $this->get('/teams/' . $id, $token);
