@@ -33,10 +33,6 @@ class Team
      *     max="64",
      *     maxMessage="Le nom de l'équipe doit faire au plus 64 caractères"
      * )
-     * @Assert\Regex(
-     *     pattern="/^[\p{L} &.-]+$/",
-     *     message="Le nom de l'équipe peut contenir des lettres, des espaces, ou les 3 caractères spéciaux suivants : &.-"
-     * )
      */
     private $name;
 

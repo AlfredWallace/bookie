@@ -2,6 +2,7 @@
 
 namespace App\Tests\DataFixtures;
 
+use App\DataFixtures\BookieDevFixtureInterface;
 use App\Entity\Player;
 use App\Factory\PlayerFactory;
 use App\Tests\DataProviders\PlayerProvider;
@@ -9,7 +10,7 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 
-class TestPlayerFixtures extends AbstractFixture implements BookieTestFixtureInterface
+class TestPlayerFixtures extends AbstractFixture implements BookieTestFixtureInterface, BookieDevFixtureInterface
 {
     private $playerFactory;
     private $entityManager;

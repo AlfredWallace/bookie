@@ -7,8 +7,8 @@ class PlayerProvider
     public static function fixturePlayers(): array
     {
         return array_map(function ($players) {
-            if (array_key_exists('player', $players)) {
-                return $players['player'];
+            if (count($players) === 1) {
+                return array_shift($players);
             } elseif (array_key_exists('old', $players)) {
                 return $players['old'];
             } else {

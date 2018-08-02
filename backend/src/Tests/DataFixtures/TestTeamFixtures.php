@@ -2,13 +2,14 @@
 
 namespace App\Tests\DataFixtures;
 
+use App\DataFixtures\BookieDevFixtureInterface;
 use App\Entity\Team;
 use App\Tests\DataProviders\TeamProvider;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManagerInterface;
 
-class TestTeamFixtures extends AbstractFixture implements BookieTestFixtureInterface
+class TestTeamFixtures extends AbstractFixture implements BookieTestFixtureInterface, BookieDevFixtureInterface
 {
     private $entityManager;
 
