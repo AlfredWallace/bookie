@@ -2,22 +2,14 @@
 
 namespace App\Tests\DataProviders;
 
-class TeamProvider
+class TeamProvider extends AbstractDataProvider
 {
     public static function fixtureTeams(): array
     {
-        return array_map(function ($teams) {
-            if (count($teams) === 1) {
-                return array_shift($teams);
-            } elseif (array_key_exists('old', $teams)) {
-                return $teams['old'];
-            } else {
-                return null;
-            }
-        }, array_merge(
+        return self::normalizeProviders(
             self::basicTeams(),
             self::teamsToModify()
-        ));
+        );
     }
 
     public static function basicTeams(): array

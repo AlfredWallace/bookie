@@ -2,26 +2,18 @@
 
 namespace App\Tests\DataProviders;
 
-class PlayerProvider
+class PlayerProvider extends AbstractDataProvider
 {
     public static function fixturePlayers(): array
     {
-        return array_map(function ($players) {
-            if (count($players) === 1) {
-                return array_shift($players);
-            } elseif (array_key_exists('old', $players)) {
-                return $players['old'];
-            } else {
-                return null;
-            }
-        }, array_merge(
+        return self::normalizeProviders(
             self::otherPlayerDataProvider(),
             self::additionalPlayers(),
             self::playersToModify(),
             self::playersToSelfModify(),
             self::playersToDelete(),
             self::playersToSelfDelete()
-        ));
+        );
     }
 
     public static function mainPlayer(): array
