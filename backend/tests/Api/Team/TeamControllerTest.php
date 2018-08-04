@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TeamControllerTest extends ApiTestCase
 {
-    private function teamResponseAssertions($team, $responseBody, $id = false)
+    private function teamResponseAssertions($team, $responseBody, $id = false): void
     {
         $this->assertArrayHasKey('id', $responseBody);
         $this->assertArrayHasKey('name', $responseBody);
@@ -24,7 +24,7 @@ class TeamControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\TeamProvider::basicTeams()
      * @param $team
      */
-    public function testGetTeamByAdmin($team)
+    public function testGetTeamByAdmin($team): void
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
@@ -39,7 +39,7 @@ class TeamControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\TeamProvider::basicTeams()
      * @param $team
      */
-    public function testGetTeamByNonAdmin($team)
+    public function testGetTeamByNonAdmin($team): void
     {
         $token = $this->getToken(PlayerProvider::otherPlayer());
 
@@ -54,7 +54,7 @@ class TeamControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\TeamProvider::teamsToCreate()
      * @param $team
      */
-    public function testCreateTeamsByNonAdmin($team)
+    public function testCreateTeamsByNonAdmin($team): void
     {
         $token = $this->getToken(PlayerProvider::otherPlayer());
 
@@ -67,7 +67,7 @@ class TeamControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\TeamProvider::teamsToCreate()
      * @param $team
      */
-    public function testCreateTeamsByAdmin($team)
+    public function testCreateTeamsByAdmin($team): void
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
@@ -82,7 +82,7 @@ class TeamControllerTest extends ApiTestCase
      * @param $old
      * @param $new
      */
-    public function testUpdateTeamsByNonAdmin($old, $new)
+    public function testUpdateTeamsByNonAdmin($old, $new): void
     {
         $token = $this->getToken(PlayerProvider::otherPlayer());
 
@@ -96,7 +96,7 @@ class TeamControllerTest extends ApiTestCase
      * @param $old
      * @param $new
      */
-    public function testUpdateTeamsByAdmin($old, $new)
+    public function testUpdateTeamsByAdmin($old, $new): void
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
@@ -110,7 +110,7 @@ class TeamControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\TeamProvider::teamsToDelete()
      * @param $team
      */
-    public function testDeleteByNonAdmin($team)
+    public function testDeleteByNonAdmin($team): void
     {
         $token = $this->getToken(PlayerProvider::otherPlayer());
 
@@ -123,7 +123,7 @@ class TeamControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\TeamProvider::teamsToDelete()
      * @param $team
      */
-    public function testDeleteTeamsByAdmin($team)
+    public function testDeleteTeamsByAdmin($team): void
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 

@@ -13,7 +13,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
-    public function testToken($player)
+    public function testToken($player): void
     {
         $response = $this->getTokenResponse($player);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
@@ -33,7 +33,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
-    public function testFetchTokenWithBadPlayername($player)
+    public function testFetchTokenWithBadPlayername($player): void
     {
         $this->post('/login_check', null, [
             'username' => 'dummy' . $player['username'],
@@ -46,7 +46,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
-    public function testFetchTokenWithBadPassword($player)
+    public function testFetchTokenWithBadPassword($player): void
     {
         $this->post('/login_check', null, [
             'username' => $player['username'],
@@ -55,7 +55,7 @@ class PlayerControllerTest extends ApiTestCase
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, self::$staticClient->getResponse()->getStatusCode());
     }
 
-    private function playerResponseAssertions($player, $responseBody, $id = false)
+    private function playerResponseAssertions($player, $responseBody, $id = false): void
     {
         $this->assertArrayHasKey('id', $responseBody);
         $this->assertArrayHasKey('username', $responseBody);
@@ -66,7 +66,7 @@ class PlayerControllerTest extends ApiTestCase
         }
     }
 
-    private function fetchPlayer($token, $player)
+    private function fetchPlayer($token, $player): void
     {
         $id = $player['id'];
         $this->get('/players/' . $id, $token);
@@ -80,7 +80,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
-    public function testGetSelfPlayer($player)
+    public function testGetSelfPlayer($player): void
     {
         $this->fetchPlayer($this->getToken($player), $player);
     }
@@ -90,7 +90,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
-    public function testGetOtherPlayer($player)
+    public function testGetOtherPlayer($player): void
     {
         $this->fetchPlayer($this->getToken(PlayerProvider::otherPlayer()), $player);
     }
@@ -99,7 +99,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::otherPlayerDataProvider()
      * @param $player
      */
-    public function testGetUnexistentPlayer($player)
+    public function testGetUnexistentPlayer($player): void
     {
         $this->get('/players/' . self::UNEXISTENT_ID, $this->getToken($player));
         $response = self::$staticClient->getResponse();
@@ -110,7 +110,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::PlayersToCreate()
      * @param $player
      */
-    public function testCreatePlayer($player)
+    public function testCreatePlayer($player): void
     {
         $this->post('/players/new', null, [
             'username' => $player['username'] ?? null,
@@ -125,7 +125,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::invalidPlayers()
      * @param $player
      */
-    public function testCreateInvalidPlayer($player)
+    public function testCreateInvalidPlayer($player): void
     {
         $this->post('/players/new', null, [
             'username' => $player['username'] ?? null,
@@ -139,7 +139,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::PlayersToSelfDelete()
      * @param $player
      */
-    public function testDeleteSelf($player)
+    public function testDeleteSelf($player): void
     {
         $token = $this->getToken($player);
 
@@ -152,7 +152,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::PlayersToDelete()
      * @param $player
      */
-    public function testDeletePlayerByAdmin($player)
+    public function testDeletePlayerByAdmin($player): void
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
@@ -165,7 +165,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
      * @param $player
      */
-    public function testDeleteUnexistentPlayer($player)
+    public function testDeleteUnexistentPlayer($player): void
     {
         $this->delete('/players/' . self::UNEXISTENT_ID, $this->getToken($player));
         $response = self::$staticClient->getResponse();
@@ -177,7 +177,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
-    public function testDeleteOtherPlayer($player)
+    public function testDeleteOtherPlayer($player): void
     {
         $token = $this->getToken(PlayerProvider::otherPlayer());
 
@@ -191,7 +191,7 @@ class PlayerControllerTest extends ApiTestCase
      * @param $oldPlayer
      * @param $newPlayer
      */
-    public function testUpdateSelf($oldPlayer, $newPlayer)
+    public function testUpdateSelf($oldPlayer, $newPlayer): void
     {
         $token = $this->getToken($oldPlayer);
 
@@ -209,7 +209,7 @@ class PlayerControllerTest extends ApiTestCase
      * @param $oldPlayer
      * @param $newPlayer
      */
-    public function testUpdatePlayerByAdmin($oldPlayer, $newPlayer)
+    public function testUpdatePlayerByAdmin($oldPlayer, $newPlayer): void
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
@@ -227,7 +227,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
      * @param $player
      */
-    public function testUpdateOtherPlayer($player)
+    public function testUpdateOtherPlayer($player): void
     {
         $requester = PlayerProvider::otherPlayer();
         $token = $this->getToken($requester);
@@ -244,7 +244,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
      * @param $player
      */
-    public function testUpdateUnexistentPlayer($player)
+    public function testUpdateUnexistentPlayer($player): void
     {
         $this->put('/players/' . self::UNEXISTENT_ID, $this->getToken($player), []);
         $response = self::$staticClient->getResponse();
@@ -255,7 +255,7 @@ class PlayerControllerTest extends ApiTestCase
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::invalidPlayers()
      * @param $invalidData
      */
-    public function testUpdatePlayerWithInvalidData($invalidData)
+    public function testUpdatePlayerWithInvalidData($invalidData): void
     {
         $player = PlayerProvider::otherPlayer();
         $token = $this->getToken($player);
