@@ -69,4 +69,31 @@ class TeamController extends ApiController
     {
         return $this->getSerializedResponse($teamRepository->findAllIndexedById(), ['team.default']);
     }
+
+    /**
+     * @Route(
+     *     "/teams/{id}",
+     *     name="bookie_team_update",
+     *     methods={"PUT"},
+     *     requirements={"id"="\d+"}
+     * )
+     *
+     * @Security("is_granted('ROLE_ADMIN')")
+     *
+     * @param Request $request
+     * @param Team $team
+     * @return JsonResponse
+     */
+    public function update(Request $request, Team $team): JsonResponse
+    {
+        $requestBodyTeam = $this->getValidatedObject($request->getContent(), Team::class);
+
+        $team->setName($requestBodyTeam->getName());
+        $team->setAbbreviation($requestBodyTeam->getAbbreviation());
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($team);
+        $em->flush();
+
+        return $this->getSerializedResponse($team, self::DEFAULT_SERIALIZATION_GROUPS);
+    }
 }

@@ -76,4 +76,33 @@ class TeamControllerTest extends ApiTestCase
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $this->teamResponseAssertions($team, $this->getBody($response));
     }
+
+    /**
+     * @dataProvider \App\Tests\DataProviders\TeamProvider::teamsToModify()
+     * @param $old
+     * @param $new
+     */
+    public function testUpdateTeamsByNonAdmin($old, $new)
+    {
+        $token = $this->getToken(PlayerProvider::otherPlayer());
+
+        $this->put('/teams/' . $old['id'], $token, $new);
+        $response = self::$staticClient->getResponse();
+        $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
+    }
+
+    /**
+     * @dataProvider \App\Tests\DataProviders\TeamProvider::teamsToModify()
+     * @param $old
+     * @param $new
+     */
+    public function testUpdateTeamsByAdmin($old, $new)
+    {
+        $token = $this->getToken(PlayerProvider::mainPlayer());
+
+        $this->put('/teams/' . $old['id'], $token, $new);
+        $response = self::$staticClient->getResponse();
+        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+        $this->teamResponseAssertions($new, $this->getBody($response));
+    }
 }
