@@ -8,7 +8,8 @@ class TeamProvider extends AbstractDataProvider
     {
         return self::normalizeProviders(
             self::basicTeams(),
-            self::teamsToModify()
+            self::teamsToModify(),
+            self::teamsToDelete()
         );
     }
 
@@ -110,6 +111,33 @@ class TeamProvider extends AbstractDataProvider
                     'id' => 9,
                     'name' => 'Suède',
                     'abbreviation' => 'SWE',
+                ],
+            ],
+        ];
+    }
+
+    public static function teamsToDelete(): array
+    {
+        return [
+            [
+                'team' => [
+                    'id' => 11,
+                    'name' => 'Argentine',
+                    'abbreviation' => 'ARG'
+                ],
+            ],
+            [
+                'team' => [
+                    'id' => 12,
+                    'name' => 'Mexique',
+                    'abbreviation' => 'MEX'
+                ],
+            ],
+            [
+                'team' => [
+                    'id' => 13,
+                    'name' => 'Japon',
+                    'abbreviation' => 'JPN'
                 ],
             ],
         ];

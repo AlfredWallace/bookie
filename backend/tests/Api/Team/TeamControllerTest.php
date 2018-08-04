@@ -105,4 +105,31 @@ class TeamControllerTest extends ApiTestCase
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->teamResponseAssertions($new, $this->getBody($response));
     }
+
+    /**
+     * @dataProvider \App\Tests\DataProviders\TeamProvider::teamsToDelete()
+     * @param $team
+     */
+    public function testDeleteByNonAdmin($team)
+    {
+        $token = $this->getToken(PlayerProvider::otherPlayer());
+
+        $this->delete('/teams/' . $team['id'], $token);
+        $response = self::$staticClient->getResponse();
+        $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
+    }
+
+    /**
+     * @dataProvider \App\Tests\DataProviders\TeamProvider::teamsToDelete()
+     * @param $team
+     */
+    public function testDeleteTeamsByAdmin($team)
+    {
+        $token = $this->getToken(PlayerProvider::mainPlayer());
+
+        $this->delete('/teams/' . $team['id'], $token);
+        $response = self::$staticClient->getResponse();
+        $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
+    }
+
 }

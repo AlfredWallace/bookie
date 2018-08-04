@@ -96,4 +96,26 @@ class TeamController extends ApiController
 
         return $this->getSerializedResponse($team, self::DEFAULT_SERIALIZATION_GROUPS);
     }
+
+    /**
+     * @Route(
+     *     "/teams/{id}",
+     *     name="bookie_teams_remove",
+     *     methods={"DELETE"},
+     *     requirements={"id"="\d+"}
+     * )
+     *
+     * @Security("is_granted('ROLE_ADMIN')")
+     *
+     * @param Team $team
+     * @return JsonResponse
+     */
+    public function remove(Team $team): JsonResponse
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($team);
+        $em->flush();
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+    }
 }
