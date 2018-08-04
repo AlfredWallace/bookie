@@ -4,6 +4,7 @@ namespace App\Tests\Api\Team;
 
 use App\Tests\Api\ApiTestCase;
 use App\Tests\DataProviders\PlayerProvider;
+use App\Tests\DataProviders\TeamProvider;
 use Symfony\Component\HttpFoundation\Response;
 
 class TeamControllerTest extends ApiTestCase
@@ -132,4 +133,29 @@ class TeamControllerTest extends ApiTestCase
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 
+    /**
+     * @dataProvider \App\Tests\DataProviders\TeamProvider::invalidTeams()
+     * @param $invalidData
+     */
+    public function testCreateInvalidTeams($invalidData): void
+    {
+        $token = $this->getToken(PlayerProvider::mainPlayer());
+
+        $this->post('/teams', $token, $invalidData);
+        $response = self::$staticClient->getResponse();
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
+
+    /**
+     * @dataProvider \App\Tests\DataProviders\TeamProvider::invalidTeams()
+     * @param $invalidData
+     */
+    public function testUpdateTeamWithInvalidData($invalidData): void
+    {
+        $token = $this->getToken(PlayerProvider::mainPlayer());
+
+        $this->put('/teams/' . TeamProvider::mainTeam()['id'], $token, $invalidData);
+        $response = self::$staticClient->getResponse();
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
 }

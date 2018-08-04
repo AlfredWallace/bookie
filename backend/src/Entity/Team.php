@@ -55,7 +55,7 @@ class Team
      */
     private $abbreviation;
 
-    public function __construct(string $name, string $abbreviation)
+    public function __construct(?string $name = null, ?string $abbreviation = null)
     {
         $this->name = $name;
         $this->abbreviation = $abbreviation;

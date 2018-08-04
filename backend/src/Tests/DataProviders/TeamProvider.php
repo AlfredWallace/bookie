@@ -7,22 +7,33 @@ class TeamProvider extends AbstractDataProvider
     public static function fixtureTeams(): array
     {
         return self::normalizeProviders(
+            self::mainTeamDataProvider(),
             self::basicTeams(),
             self::teamsToModify(),
             self::teamsToDelete()
         );
     }
 
+    public static function mainTeam(): array
+    {
+        return [
+            'id' => 1,
+            'name' => 'France',
+            'abbreviation' => 'FRA',
+        ];
+    }
+
+    public static function mainTeamDataProvider(): array {
+        return [
+            [
+                'team' => self::mainTeam(),
+            ],
+        ];
+    }
+
     public static function basicTeams(): array
     {
         return [
-            [
-                'team' => [
-                    'id' => 1,
-                    'name' => 'France',
-                    'abbreviation' => 'FRA',
-                ],
-            ],
             [
                 'team' => [
                     'id' => 2,
@@ -55,7 +66,7 @@ class TeamProvider extends AbstractDataProvider
                     'id' => 10,
                     'name' => 'Ab0àÀèÈéÉêÊëËîÎïÏôÔöÖœŒûÛüÜùÙ !@#$%^&*()-_=+[{]}\|;:\'",<.>/?',
                     'abbreviation' => 'XYZ'
-                ],  
+                ],
             ],
             [
                 'team' => [
@@ -146,48 +157,74 @@ class TeamProvider extends AbstractDataProvider
     public static function invalidTeams(): array
     {
         return [
-            [],
             [
-                'name' => 'Nope Kingdom',
+                'team' => [
+
+                ],
             ],
             [
-                'abbreviation' => 'NOPE',
+                'team' => [
+                    'name' => 'Nope Kingdom',
+                ],
             ],
             [
-                'name' => '',
-                'abbreviation' => 'NOPE',
+                'team' => [
+                    'abbreviation' => 'NOPE',
+                ],
             ],
             [
-                'name' => 'Nope Kingdom',
-                'abbreviation' => '',
+                'team' => [
+                    'name' => '',
+                    'abbreviation' => 'NOPE',
+                ],
             ],
             [
-                'name' => null,
-                'abbreviation' => 'NOPE',
+                'team' => [
+                    'name' => 'Nope Kingdom',
+                    'abbreviation' => '',
+                ],
             ],
             [
-                'name' => 'Nope Kingdom',
-                'abbreviation' => null,
+                'team' => [
+                    'name' => null,
+                    'abbreviation' => 'NOPE',
+                ],
             ],
             [
-                'name' => 'Ts',
-                'abbreviation' => 'NOPE',
+                'team' => [
+                    'name' => 'Nope Kingdom',
+                    'abbreviation' => null,
+                ],
             ],
             [
-                'name' => 'This is a team name so long, that it probably does not even exist.',
-                'abbreviation' => 'NOPE',
+                'team' => [
+                    'name' => 'Ts',
+                    'abbreviation' => 'NOPE',
+                ],
             ],
             [
-                'name' => 'Nope Kingdom',
-                'abbreviation' => 'X',
+                'team' => [
+                    'name' => 'This is a team name so long, that it probably does not even exist.',
+                    'abbreviation' => 'NOPE',
+                ],
             ],
             [
-                'name' => 'Nope Kingdom',
-                'abbreviation' => 'ABBREVIATION',
+                'team' => [
+                    'name' => 'Nope Kingdom',
+                    'abbreviation' => 'X',
+                ],
             ],
             [
-                'name' => 'Nope Kingdom',
-                'abbreviation' => 'Plop',
+                'team' => [
+                    'name' => 'Nope Kingdom',
+                    'abbreviation' => 'ABBREVIATION',
+                ],
+            ],
+            [
+                'team' => [
+                    'name' => 'Nope Kingdom',
+                    'abbreviation' => 'Plop',
+                ],
             ],
         ];
     }
