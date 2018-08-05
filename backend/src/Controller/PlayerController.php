@@ -112,7 +112,7 @@ class PlayerController extends ApiController
      *     requirements={"id"="\d+"}
      * )
      *
-     * @Security("is_granted('ROLE_ADMIN') or id == user.getId()")
+     * @Security("is_granted('ROLE_ADMIN')")
      *
      * @param Player $player
      * @return JsonResponse

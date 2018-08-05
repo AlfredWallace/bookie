@@ -27,17 +27,8 @@ class TestPlayerFixtures extends AbstractFixture implements BookieTestFixtureInt
         $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
         $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
 
-        $mainPlayer = PlayerProvider::mainPlayer();
-        $mainPlayerObject = $this->playerFactory->create(
-            $mainPlayer['username'],
-            $mainPlayer['password'],
-            ['ROLE_ADMIN'],
-            $mainPlayer['id']
-        );
-        $manager->persist($mainPlayerObject);
-
         foreach (PlayerProvider::fixturePlayers() as $player) {
-            $playerObject = $this->playerFactory->create($player['username'], $player['password'], [], $player['id']);
+            $playerObject = $this->playerFactory->create($player['username'], $player['password'], $player['roles'], $player['id']);
             $manager->persist($playerObject);
         }
         $manager->flush();

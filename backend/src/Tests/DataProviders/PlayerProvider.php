@@ -6,243 +6,122 @@ class PlayerProvider extends AbstractDataProvider
 {
     public static function fixturePlayers(): array
     {
-        return self::normalizeProviders(
-            self::otherPlayerDataProvider(),
-            self::additionalPlayers(),
-            self::playersToModify(),
-            self::playersToSelfModify(),
-            self::playersToDelete(),
-            self::playersToSelfDelete()
-        );
-    }
-
-    public static function mainPlayer(): array
-    {
         return [
-            'username' => 'wallace',
-            'password' => 'wallace',
-            'id' => 1,
+            self::mainPlayer(),
+            self::otherPlayer(),
+            self::playerToDelete(),
         ];
     }
 
-    public static function mainPlayerDataProvider(): array
+    public static function testTokenPlayers(): array
     {
         return [
             [
                 'player' => self::mainPlayer(),
             ],
-        ];
-    }
-
-    public static function otherPlayer(): array
-    {
-        return [
-            'username' => 'Other player',
-            'password' => '0th3rP4ssw0rd',
-            'id' => 2,
-        ];
-    }
-
-    public static function otherPlayerDataProvider(): array
-    {
-        return [
             [
                 'player' => self::otherPlayer(),
             ],
         ];
     }
 
-    public static function additionalPlayers(): array
+    public static function mainPlayer(): array
+    {
+        return [
+            'id' => 1,
+            'username' => 'wallace',
+            'password' => 'wallace',
+            'roles' => ['ROLE_ADMIN'],
+        ];
+    }
+
+    public static function otherPlayer(): array
+    {
+        return [
+            'id' => 2,
+            'username' => 'Other player',
+            'password' => '0th3rP4ssw0rd',
+            'roles' => ['ROLE_USER'],
+        ];
+    }
+
+    public static function playerToDelete(): array
+    {
+        return [
+            'id' => 3,
+            'username' => 'useless-player',
+            'password' => 'whyB0th3r',
+            'roles' => ['ROLE_USER'],
+        ];
+    }
+
+//    public static function playerToSelfUpdate(): array
+//    {
+//        return [
+//            'id' => 4,
+//            'username' => 'useless-player',
+//            'password' => 'whyB0th3r',
+//            'roles' => ['ROLE_USER'],
+//        ];
+//    }
+
+    public static function badLoginData(): array
     {
         return [
             [
                 'player' => [
-                    'username' => 'plop',
-                    'password' => 'plop',
-                    'id' => 3,
+                    'username' => 'dummy' . self::otherPlayer()['username'],
+                    'password' => self::otherPlayer()['password'],
                 ],
             ],
             [
                 'player' => [
-                    'username' => 'Talkie Walkie',
-                    'password' => 'n0ns3ns3!',
-                    'id' => 4,
-                ],
-            ],
-            [
-                'player' => [
-                    'username' => 'john_doe',
-                    'password' => 'qwerty123',
-                    'id' => 5,
+                    'username' => self::otherPlayer()['username'],
+                    'password' => 'dummy' . self::otherPlayer()['password'],
                 ],
             ],
         ];
     }
 
-    public static function playersToModify(): array
-    {
-        return [
-            [
-                'old' => [
-                    'username' => 'alice',
-                    'password' => 'w0nd3rl4nd',
-                    'id' => 6,
-                ],
-                'new' => [
-                    'username' => 'alice2leretour',
-                    'password' => 'w0nd3rl4nd',
-                    'id' => 6,
-                ],
-            ],
-            [
-                'old' => [
-                    'username' => 'bob',
-                    'password' => 'p4l1ndr0m3',
-                    'id' => 7,
-                ],
-                'new' => [
-                    'username' => 'bob3lavengeance',
-                    'password' => '3m0rdn1l4p',
-                    'id' => 7,
-                ],
-            ],
-            [
-                'old' => [
-                    'username' => 'charlie_yksi',
-                    'password' => 'l3nt0k0n3',
-                    'id' => 8,
-                ],
-                'new' => [
-                    'username' => 'charlie_kaksi',
-                    'password' => 'l3nt0k0n3',
-                    'id' => 8,
-                ],
-            ],
-        ];
-    }
-
-    public static function playersToSelfModify(): array
-    {
-        return [
-            [
-                'old' => [
-                    'username' => 'gaelle',
-                    'password' => 'w0nd3rl4nd',
-                    'id' => 9,
-                ],
-                'new' => [
-                    'username' => 'guenael',
-                    'password' => 'w0nd3rl4nd',
-                    'id' => 9,
-                ],
-            ],
-            [
-                'old' => [
-                    'username' => 'hector',
-                    'password' => 'p4l1ndr0m3',
-                    'id' => 10,
-                ],
-                'new' => [
-                    'username' => 'hec thor',
-                    'password' => '3m0rdn1l4p',
-                    'id' => 10,
-                ],
-            ],
-            [
-                'old' => [
-                    'username' => 'ignace',
-                    'password' => 'l3nt0k0n3',
-                    'id' => 11,
-                ],
-                'new' => [
-                    'username' => 'iguane',
-                    'password' => 'l3nt0k0n3',
-                    'id' => 11,
-                ],
-            ],
-        ];
-    }
-
-    public static function playersToDelete(): array
-    {
-        return [
-            [
-                'player' => [
-                    'username' => 'useless-player',
-                    'password' => 'whyB0th3r',
-                    'id' => 12,
-                ],
-            ],
-            [
-                'player' => [
-                    'username' => 'not-so-useful',
-                    'password' => 'mw4h4h4h4',
-                    'id' => 13,
-                ],
-            ],
-            [
-                'player' => [
-                    'username' => 'void',
-                    'password' => 'v0idv0id',
-                    'id' => 14,
-                ],
-            ],
-        ];
-    }
-
-    public static function playersToSelfDelete(): array
-    {
-        return [
-            [
-                'player' => [
-                    'username' => 'self_destruct',
-                    'password' => 'boum',
-                    'id' => 15,
-                ],
-            ],
-            [
-                'player' => [
-                    'username' => 'dis-integer',
-                    'password' => 'zap',
-                    'id' => 16,
-                ],
-            ],
-            [
-                'player' => [
-                    'username' => 'Sue Side',
-                    'password' => 'und3rth3cot3',
-                    'id' => 17,
-                ],
-            ],
-        ];
-    }
-
-    public static function playersToCreate(): array
-    {
-        return [
-            [
-                'player' => [
-                    'username' => 'Ray Cent',
-                    'password' => 'th1sP4ss1sR3c3nt',
-                    'id' => 18,
-                ],
-            ],
-            [
-                'player' => [
-                    'username' => 'More Ressent',
-                    'password' => 'fr3shP4ss',
-                    'id' => 19,
-                ],
-            ],
-            [
-                'player' => [
-                    'username' => 'Evan Morescent',
-                    'password' => '1dontkn0wwh4ttos4y',
-                    'id' => 20,
-                ],
-            ],
-        ];
-    }
+//    public static function playerToSelfModify(): array
+//    {
+//        return [
+//            [
+//                'old' => [
+//                    'username' => 'alice',
+//                    'password' => 'wonderland',
+//                    'id' => 3,
+//                ],
+//                'self' => [
+//                    'username' => 'isBack',
+//                    'password' => 'w0nd3rl4nd',
+//                    'id' => 3,
+//                ],
+//                'admin' => [
+//                    'username' => 'withAVengeance',
+//                    'password' => 'wndrlnd',
+//                    'id' => 3,
+//                ],
+//            ],
+//            [
+//                'old' => [
+//                    'username' => 'bob',
+//                    'password' => 'p4l1ndr0m3',
+//                    'id' => 4,
+//                ],
+//                'self' => [
+//                    'username' => 'obo',
+//                    'password' => '3m0rdn1l4p',
+//                    'id' => 4,
+//                ],
+//                'admin' => [
+//                    'username' => 'boo',
+//                    'password' => 'isHungry',
+//                    'id' => 4,
+//                ],
+//            ],
+//        ];
+//    }
 
     public static function invalidPlayers(): array
     {

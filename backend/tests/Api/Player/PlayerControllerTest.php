@@ -11,8 +11,7 @@ class PlayerControllerTest extends ApiTestCase
     const PLAYER_ROUTE = '/players';
     
     /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
+     * @dataProvider \App\Tests\DataProviders\PlayerProvider::testTokenPlayers()
      * @param $player
      */
     public function testToken($player): void
@@ -32,28 +31,12 @@ class PlayerControllerTest extends ApiTestCase
     }
 
     /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
+     * @dataProvider \App\Tests\DataProviders\PlayerProvider::badLoginData()
      * @param $player
      */
-    public function testFetchTokenWithBadPlayername($player): void
+    public function testFetchTokenWithBadLoginData($player): void
     {
-        $this->post('/login_check', null, [
-            'username' => 'dummy' . $player['username'],
-            'password' => $player['password'],
-        ]);
-        $this->assertEquals(Response::HTTP_UNAUTHORIZED, self::$staticClient->getResponse()->getStatusCode());
-    }
-
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
-     * @param $player
-     */
-    public function testFetchTokenWithBadPassword($player): void
-    {
-        $this->post('/login_check', null, [
-            'username' => $player['username'],
-            'password' => 'dummy' . $player['password'],
-        ]);
+        $this->post('/login_check', null, $player);
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, self::$staticClient->getResponse()->getStatusCode());
     }
 
@@ -77,47 +60,31 @@ class PlayerControllerTest extends ApiTestCase
         $this->playerResponseAssertions($player, $this->getBody($response), $id);
     }
 
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
-     * @param $player
-     */
-    public function testGetSelfPlayer($player): void
+    public function testGetPlayerByAdmin(): void
     {
-        $this->fetchPlayer($this->getToken($player), $player);
+        $this->fetchPlayer($this->getToken(PlayerProvider::mainPlayer()), PlayerProvider::otherPlayer());
     }
 
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
-     * @param $player
-     */
-    public function testGetOtherPlayer($player): void
+    public function testGetPlayerByNonAdmin(): void
     {
-        $this->fetchPlayer($this->getToken(PlayerProvider::otherPlayer()), $player);
+        $this->fetchPlayer($this->getToken(PlayerProvider::otherPlayer()), PlayerProvider::mainPlayer());
     }
 
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::otherPlayerDataProvider()
-     * @param $player
-     */
-    public function testGetUnexistentPlayer($player): void
+    public function testGetUnexistentPlayer(): void
     {
-        $this->get(self::PLAYER_ROUTE . '/' . self::UNEXISTENT_ID, $this->getToken($player));
+        $this->get(self::PLAYER_ROUTE . '/' . self::UNEXISTENT_ID, $this->getToken(PlayerProvider::mainPlayer()));
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::PlayersToCreate()
-     * @param $player
-     */
-    public function testCreatePlayer($player): void
+    public function testCreatePlayer(): void
     {
-        $this->post(self::PLAYER_ROUTE . '/new', null, [
-            'username' => $player['username'] ?? null,
-            'password' => $player['password'] ?? null,
-        ]);
+        $player = [
+            'username' => 'testCreatePlayer',
+            'password' => 'R4nd0mP455w0rd',
+        ];
+
+        $this->post(self::PLAYER_ROUTE . '/new', null, $player);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $this->playerResponseAssertions($player, $this->getBody($response));
@@ -129,141 +96,87 @@ class PlayerControllerTest extends ApiTestCase
      */
     public function testCreateInvalidPlayer($player): void
     {
-        $this->post(self::PLAYER_ROUTE . '/new', null, [
-            'username' => $player['username'] ?? null,
-            'password' => $player['password'] ?? null,
-        ]);
+        $this->post(self::PLAYER_ROUTE . '/new', null, $player);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::PlayersToSelfDelete()
-     * @param $player
-     */
-    public function testDeleteSelf($player): void
+    public function testDeletePlayerByAdmin(): void
     {
-        $token = $this->getToken($player);
-
-        $this->delete(self::PLAYER_ROUTE . '/' . $player['id'], $token);
+        $this->delete(self::PLAYER_ROUTE . '/' . PlayerProvider::playerToDelete()['id'], $this->getToken(PlayerProvider::mainPlayer()));
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
 
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::PlayersToDelete()
-     * @param $player
-     */
-    public function testDeletePlayerByAdmin($player): void
+    public function testDeletePlayerByNonAdmin(): void
     {
-        $token = $this->getToken(PlayerProvider::mainPlayer());
-
-        $this->delete(self::PLAYER_ROUTE . '/' . $player['id'], $token);
-        $response = self::$staticClient->getResponse();
-        $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
-    }
-
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
-     * @param $player
-     */
-    public function testDeleteUnexistentPlayer($player): void
-    {
-        $this->delete(self::PLAYER_ROUTE . '/' . self::UNEXISTENT_ID, $this->getToken($player));
-        $response = self::$staticClient->getResponse();
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
-    }
-
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
-     * @param $player
-     */
-    public function testDeleteOtherPlayer($player): void
-    {
-        $token = $this->getToken(PlayerProvider::otherPlayer());
-
-        $this->delete(self::PLAYER_ROUTE . '/' . $player['id'], $token);
+        $this->delete(self::PLAYER_ROUTE . '/' . PlayerProvider::mainPlayer()['id'], $this->getToken(PlayerProvider::otherPlayer()));
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
 
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::PlayersToSelfModify()
-     * @param $oldPlayer
-     * @param $newPlayer
-     */
-    public function testUpdateSelf($oldPlayer, $newPlayer): void
+    public function testDeleteUnexistentPlayer(): void
     {
-        $token = $this->getToken($oldPlayer);
-
-        $this->put(self::PLAYER_ROUTE . '/' . $oldPlayer['id'], $token, [
-            'username' => $newPlayer['username'] ?? null,
-            'password' => $newPlayer['password'] ?? null,
-        ]);
-        $response = self::$staticClient->getResponse();
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        $this->playerResponseAssertions($newPlayer, $this->getBody($response));
-    }
-
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::PlayersToModify()
-     * @param $oldPlayer
-     * @param $newPlayer
-     */
-    public function testUpdatePlayerByAdmin($oldPlayer, $newPlayer): void
-    {
-        $token = $this->getToken(PlayerProvider::mainPlayer());
-
-        $this->put(self::PLAYER_ROUTE . '/' . $oldPlayer['id'], $token, [
-            'username' => $newPlayer['username'] ?? null,
-            'password' => $newPlayer['password'] ?? null,
-        ]);
-        $response = self::$staticClient->getResponse();
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        $this->playerResponseAssertions($newPlayer, $this->getBody($response));
-    }
-
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
-     * @param $player
-     */
-    public function testUpdateOtherPlayer($player): void
-    {
-        $requester = PlayerProvider::otherPlayer();
-        $token = $this->getToken($requester);
-
-        $this->put(self::PLAYER_ROUTE . '/' . $player['id'], $token, [
-            'username' => $requester['username'] ?? null,
-            'password' => $requester['password'] ?? null,
-        ]);
-        $response = self::$staticClient->getResponse();
-        $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
-    }
-
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
-     * @param $player
-     */
-    public function testUpdateUnexistentPlayer($player): void
-    {
-        $this->put(self::PLAYER_ROUTE . '/' . self::UNEXISTENT_ID, $this->getToken($player), []);
+        $this->delete(self::PLAYER_ROUTE . '/' . self::UNEXISTENT_ID, $this->getToken(PlayerProvider::mainPlayer()));
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
-    /**
-     * @dataProvider \App\Tests\DataProviders\PlayerProvider::invalidPlayers()
-     * @param $invalidData
-     */
-    public function testUpdatePlayerWithInvalidData($invalidData): void
-    {
-        $player = PlayerProvider::otherPlayer();
-        $token = $this->getToken($player);
-
-        $this->put(self::PLAYER_ROUTE . '/' . $player['id'], $token, $invalidData);
-        $response = self::$staticClient->getResponse();
-        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-    }
+//    /**
+//     * @dataProvider \App\Tests\DataProviders\PlayerProvider::playersToModify()
+//     * @param $old
+//     * @param $new
+//     */
+//    public function testUpdateSelf($old, $new): void
+//    {
+//        $this->put(self::PLAYER_ROUTE . '/' . $old['id'], $this->getToken($old), $new);
+//        $response = self::$staticClient->getResponse();
+//        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+//        $this->playerResponseAssertions($new, $this->getBody($response));
+//    }
+//
+//    /**
+//     * @dataProvider \App\Tests\DataProviders\PlayerProvider::PlayersToModify()
+//     * @param $old
+//     * @param $self
+//     * @param $admin
+//     */
+//    public function testUpdatePlayerByAdmin($old, $self, $admin): void
+//    {
+//        $token = $this->getToken(PlayerProvider::mainPlayer());
+//
+//        $this->put(self::PLAYER_ROUTE . '/' . $old['id'], $token, $admin);
+//        $response = self::$staticClient->getResponse();
+//        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+//        $this->playerResponseAssertions($admin, $this->getBody($response));
+//    }
+//
+//    public function testUpdateOtherPlayer(): void
+//    {
+//        $requester = PlayerProvider::otherPlayer();
+//
+//        $this->put(self::PLAYER_ROUTE . '/' . PlayerProvider::mainPlayer()['id'], $this->getToken($requester), $requester);
+//        $response = self::$staticClient->getResponse();
+//        $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
+//    }
+//
+//    public function testUpdateUnexistentPlayer(): void
+//    {
+//        $this->put(self::PLAYER_ROUTE . '/' . self::UNEXISTENT_ID, $this->getToken(PlayerProvider::mainPlayer()), []);
+//        $response = self::$staticClient->getResponse();
+//        $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+//    }
+//
+//    /**
+//     * @dataProvider \App\Tests\DataProviders\PlayerProvider::invalidPlayers()
+//     * @param $invalidData
+//     */
+//    public function testUpdatePlayerWithInvalidData($invalidData): void
+//    {
+//        $player = PlayerProvider::mainPlayer();
+//
+//        $this->put(self::PLAYER_ROUTE . '/' . $player['id'], $this->getToken($player), $invalidData);
+//        $response = self::$staticClient->getResponse();
+//        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+//    }
 }
