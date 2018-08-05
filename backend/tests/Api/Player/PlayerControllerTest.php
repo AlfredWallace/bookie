@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PlayerControllerTest extends ApiTestCase
 {
+    const PLAYER_ROUTE = '/players';
+    
     /**
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::mainPlayerDataProvider()
      * @dataProvider \App\Tests\DataProviders\PlayerProvider::additionalPlayers()
@@ -69,7 +71,7 @@ class PlayerControllerTest extends ApiTestCase
     private function fetchPlayer($token, $player): void
     {
         $id = $player['id'];
-        $this->get('/players/' . $id, $token);
+        $this->get(self::PLAYER_ROUTE . '/' . $id, $token);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->playerResponseAssertions($player, $this->getBody($response), $id);
@@ -101,7 +103,7 @@ class PlayerControllerTest extends ApiTestCase
      */
     public function testGetUnexistentPlayer($player): void
     {
-        $this->get('/players/' . self::UNEXISTENT_ID, $this->getToken($player));
+        $this->get(self::PLAYER_ROUTE . '/' . self::UNEXISTENT_ID, $this->getToken($player));
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
@@ -112,7 +114,7 @@ class PlayerControllerTest extends ApiTestCase
      */
     public function testCreatePlayer($player): void
     {
-        $this->post('/players/new', null, [
+        $this->post(self::PLAYER_ROUTE . '/new', null, [
             'username' => $player['username'] ?? null,
             'password' => $player['password'] ?? null,
         ]);
@@ -127,7 +129,7 @@ class PlayerControllerTest extends ApiTestCase
      */
     public function testCreateInvalidPlayer($player): void
     {
-        $this->post('/players/new', null, [
+        $this->post(self::PLAYER_ROUTE . '/new', null, [
             'username' => $player['username'] ?? null,
             'password' => $player['password'] ?? null,
         ]);
@@ -143,7 +145,7 @@ class PlayerControllerTest extends ApiTestCase
     {
         $token = $this->getToken($player);
 
-        $this->delete('/players/' . $player['id'], $token);
+        $this->delete(self::PLAYER_ROUTE . '/' . $player['id'], $token);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
@@ -156,7 +158,7 @@ class PlayerControllerTest extends ApiTestCase
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
-        $this->delete('/players/' . $player['id'], $token);
+        $this->delete(self::PLAYER_ROUTE . '/' . $player['id'], $token);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
@@ -167,7 +169,7 @@ class PlayerControllerTest extends ApiTestCase
      */
     public function testDeleteUnexistentPlayer($player): void
     {
-        $this->delete('/players/' . self::UNEXISTENT_ID, $this->getToken($player));
+        $this->delete(self::PLAYER_ROUTE . '/' . self::UNEXISTENT_ID, $this->getToken($player));
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
@@ -181,7 +183,7 @@ class PlayerControllerTest extends ApiTestCase
     {
         $token = $this->getToken(PlayerProvider::otherPlayer());
 
-        $this->delete('/players/' . $player['id'], $token);
+        $this->delete(self::PLAYER_ROUTE . '/' . $player['id'], $token);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
@@ -195,7 +197,7 @@ class PlayerControllerTest extends ApiTestCase
     {
         $token = $this->getToken($oldPlayer);
 
-        $this->put('/players/' . $oldPlayer['id'], $token, [
+        $this->put(self::PLAYER_ROUTE . '/' . $oldPlayer['id'], $token, [
             'username' => $newPlayer['username'] ?? null,
             'password' => $newPlayer['password'] ?? null,
         ]);
@@ -213,7 +215,7 @@ class PlayerControllerTest extends ApiTestCase
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
-        $this->put('/players/' . $oldPlayer['id'], $token, [
+        $this->put(self::PLAYER_ROUTE . '/' . $oldPlayer['id'], $token, [
             'username' => $newPlayer['username'] ?? null,
             'password' => $newPlayer['password'] ?? null,
         ]);
@@ -232,7 +234,7 @@ class PlayerControllerTest extends ApiTestCase
         $requester = PlayerProvider::otherPlayer();
         $token = $this->getToken($requester);
 
-        $this->put('/players/' . $player['id'], $token, [
+        $this->put(self::PLAYER_ROUTE . '/' . $player['id'], $token, [
             'username' => $requester['username'] ?? null,
             'password' => $requester['password'] ?? null,
         ]);
@@ -246,7 +248,7 @@ class PlayerControllerTest extends ApiTestCase
      */
     public function testUpdateUnexistentPlayer($player): void
     {
-        $this->put('/players/' . self::UNEXISTENT_ID, $this->getToken($player), []);
+        $this->put(self::PLAYER_ROUTE . '/' . self::UNEXISTENT_ID, $this->getToken($player), []);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
@@ -260,7 +262,7 @@ class PlayerControllerTest extends ApiTestCase
         $player = PlayerProvider::otherPlayer();
         $token = $this->getToken($player);
 
-        $this->put('/players/' . $player['id'], $token, $invalidData);
+        $this->put(self::PLAYER_ROUTE . '/' . $player['id'], $token, $invalidData);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }

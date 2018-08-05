@@ -12,13 +12,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
+/**
+ * @Route("/players")
+ */
 class PlayerController extends ApiController
 {
     public const DEFAULT_SERIALIZATION_GROUPS = ['player.default'];
 
     /**
      * @Route(
-     *     "/players/new",
+     *     "/new",
      *     name="bookie_players_new",
      *     methods={"POST"}
      * )
@@ -44,7 +47,7 @@ class PlayerController extends ApiController
 
     /**
      * @Route(
-     *     "/players/{id}",
+     *     "/{id}",
      *     name="bookie_players_show",
      *     methods={"GET"},
      *     requirements={"id"="\d+"}
@@ -60,7 +63,6 @@ class PlayerController extends ApiController
 
     /**
      * @Route(
-     *     "/players",
      *     name="bookie_players_list",
      *     methods={"GET"}
      * )
@@ -76,7 +78,7 @@ class PlayerController extends ApiController
 
     /**
      * @Route(
-     *     "/players/{id}",
+     *     "/{id}",
      *     name="bookie_players_update",
      *     methods={"PUT"},
      *     requirements={"id"="\d+"}
@@ -104,7 +106,7 @@ class PlayerController extends ApiController
 
     /**
      * @Route(
-     *     "/players/{id}",
+     *     "/{id}",
      *     name="bookie_players_remove",
      *     methods={"DELETE"},
      *     requirements={"id"="\d+"}

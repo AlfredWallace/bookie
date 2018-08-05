@@ -10,13 +10,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * @Route("/teams")
+ */
 class TeamController extends ApiController
 {
     public const DEFAULT_SERIALIZATION_GROUPS = ['team.default'];
 
     /**
      * @Route(
-     *     "/teams",
      *     name="bookie_teams_new",
      *     methods={"POST"}
      * )
@@ -40,7 +42,7 @@ class TeamController extends ApiController
 
     /**
      * @Route(
-     *     "/teams/{id}",
+     *     "/{id}",
      *     name="bookie_teams_show",
      *     methods={"GET"},
      *     requirements={"id"="\d+"}
@@ -56,7 +58,6 @@ class TeamController extends ApiController
 
     /**
      * @Route(
-     *     "/teams",
      *     name="bookie_teams",
      *     methods={"GET"}
      * )
@@ -72,7 +73,7 @@ class TeamController extends ApiController
 
     /**
      * @Route(
-     *     "/teams/{id}",
+     *     "/{id}",
      *     name="bookie_team_update",
      *     methods={"PUT"},
      *     requirements={"id"="\d+"}
@@ -99,7 +100,7 @@ class TeamController extends ApiController
 
     /**
      * @Route(
-     *     "/teams/{id}",
+     *     "/{id}",
      *     name="bookie_teams_remove",
      *     methods={"DELETE"},
      *     requirements={"id"="\d+"}

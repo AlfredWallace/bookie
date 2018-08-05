@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TeamControllerTest extends ApiTestCase
 {
+    const TEAM_ROUTE = '/teams';
+
     private function teamResponseAssertions($team, $responseBody, $id = false): void
     {
         $this->assertArrayHasKey('id', $responseBody);
@@ -30,7 +32,7 @@ class TeamControllerTest extends ApiTestCase
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
         $id = $team['id'];
-        $this->get('/teams/' . $id, $token);
+        $this->get(self::TEAM_ROUTE . '/' . $id, $token);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->teamResponseAssertions($team, $this->getBody($response), $id);
@@ -45,7 +47,7 @@ class TeamControllerTest extends ApiTestCase
         $token = $this->getToken(PlayerProvider::otherPlayer());
 
         $id = $team['id'];
-        $this->get('/teams/' . $id, $token);
+        $this->get(self::TEAM_ROUTE . '/' . $id, $token);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->teamResponseAssertions($team, $this->getBody($response), $id);
@@ -59,7 +61,7 @@ class TeamControllerTest extends ApiTestCase
     {
         $token = $this->getToken(PlayerProvider::otherPlayer());
 
-        $this->post('/teams', $token, $team);
+        $this->post(self::TEAM_ROUTE, $token, $team);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
@@ -72,7 +74,7 @@ class TeamControllerTest extends ApiTestCase
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
-        $this->post('/teams', $token, $team);
+        $this->post(self::TEAM_ROUTE, $token, $team);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $this->teamResponseAssertions($team, $this->getBody($response));
@@ -87,7 +89,7 @@ class TeamControllerTest extends ApiTestCase
     {
         $token = $this->getToken(PlayerProvider::otherPlayer());
 
-        $this->put('/teams/' . $old['id'], $token, $new);
+        $this->put(self::TEAM_ROUTE . '/' . $old['id'], $token, $new);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
@@ -101,7 +103,7 @@ class TeamControllerTest extends ApiTestCase
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
-        $this->put('/teams/' . $old['id'], $token, $new);
+        $this->put(self::TEAM_ROUTE . '/' . $old['id'], $token, $new);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->teamResponseAssertions($new, $this->getBody($response));
@@ -115,7 +117,7 @@ class TeamControllerTest extends ApiTestCase
     {
         $token = $this->getToken(PlayerProvider::otherPlayer());
 
-        $this->delete('/teams/' . $team['id'], $token);
+        $this->delete(self::TEAM_ROUTE . '/' . $team['id'], $token);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
     }
@@ -128,7 +130,7 @@ class TeamControllerTest extends ApiTestCase
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
-        $this->delete('/teams/' . $team['id'], $token);
+        $this->delete(self::TEAM_ROUTE . '/' . $team['id'], $token);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
     }
@@ -141,7 +143,7 @@ class TeamControllerTest extends ApiTestCase
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
-        $this->post('/teams', $token, $invalidData);
+        $this->post(self::TEAM_ROUTE, $token, $invalidData);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
@@ -154,7 +156,7 @@ class TeamControllerTest extends ApiTestCase
     {
         $token = $this->getToken(PlayerProvider::mainPlayer());
 
-        $this->put('/teams/' . TeamProvider::mainTeam()['id'], $token, $invalidData);
+        $this->put(self::TEAM_ROUTE . '/' . TeamProvider::mainTeam()['id'], $token, $invalidData);
         $response = self::$staticClient->getResponse();
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
